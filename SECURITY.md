@@ -6,9 +6,10 @@
 
 GitHubリポジトリの「Security」タブにあるPrivate vulnerability reportingから報告してください。公開後、リポジトリ設定でこの機能を有効にします。
 
+Private vulnerability reportingを利用できない場合は、`ochabi.iwsknnk@gmail.com` へ連絡してください。
+
 報告には、影響するバージョン、再現手順、想定される影響を含めてください。APIキー、実際の機密情報、個人情報は含めないでください。
 
 ## 対応バージョン
 
 正式公開後は、最新リリースのみをセキュリティ修正の対象とします。
-

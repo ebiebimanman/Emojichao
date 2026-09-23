@@ -2,7 +2,8 @@ import Foundation
 import Security
 
 enum KeychainStore {
-    private static let service = "com.emoji-shortcut.app"
+    private static let service = "com.ebiebimanman.emoji-shortcut"
+    private static let legacyService = "com.emoji-shortcut.app"
     enum Provider {
         case jev
 
@@ -14,10 +15,15 @@ enum KeychainStore {
     }
 
     static func read(for provider: Provider = .jev) -> String? {
+        read(service: service, account: provider.account)
+            ?? read(service: legacyService, account: provider.account)
+    }
+
+    private static func read(service: String, account: String) -> String? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
-            kSecAttrAccount as String: provider.account,
+            kSecAttrAccount as String: account,
             kSecReturnData as String: true,
             kSecMatchLimit as String: kSecMatchLimitOne
         ]

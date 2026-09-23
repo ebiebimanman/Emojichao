@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.emoji-shortcut.app</string>
+	<string>com.ebiebimanman.emoji-shortcut</string>
 	<key>CFBundleName</key>
 	<string>EmojiShortcut</string>
 	<key>CFBundlePackageType</key>
@@ -19,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2026 EmojiShortcut contributors</string>
+	<string>Copyright © 2026 ebiebimanman</string>
 	<key>LSUIElement</key>
 	<true/>
 	<key>NSHighResolutionCapable</key>
