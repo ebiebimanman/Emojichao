@@ -45,10 +45,12 @@ final class EmojiCatalog {
     }
 
     private init() {
-        let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("EmojiShortcut/emoji-catalog-curated.json")
+        let applicationSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
+        let appSupport = applicationSupport.appendingPathComponent("Emojichao/emoji-catalog-curated.json")
+        let legacyAppSupport = applicationSupport.appendingPathComponent("EmojiShortcut/emoji-catalog-curated.json")
         let urls = [
             appSupport,
+            legacyAppSupport,
             Bundle.module.url(forResource: "emoji-catalog-curated", withExtension: "json"),
             Bundle.module.url(forResource: "emoji-catalog", withExtension: "json")
         ].compactMap { $0 }

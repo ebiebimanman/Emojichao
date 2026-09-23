@@ -2,7 +2,7 @@
 
 最終更新日：2026年9月23日
 
-EmojiShortcutは、個人開発者 ebiebimanman（以下「開発者」）が提供するmacOSアプリです。入力したショートコードを絵文字へ安全に置き換えるため、macOSのアクセシビリティ権限と入力監視権限を使用します。
+Emojichaoは、個人開発者 ebiebimanman（以下「開発者」）が提供するmacOSアプリです。入力したショートコードを絵文字へ安全に置き換えるため、macOSのアクセシビリティ権限と入力監視権限を使用します。
 
 ## 端末上で処理する情報
 
@@ -35,7 +35,7 @@ Jev APIキーはmacOSキーチェーンに保存されます。ソースコー�
 
 ## 権限を停止する方法
 
-macOSの「システム設定 → プライバシーとセキュリティ」から、EmojiShortcutのアクセシビリティおよび入力監視権限を取り消せます。APIキーはmacOSの「キーチェーンアクセス」で、サービス名 `com.emojichao.app` の項目を削除すると消去できます。公開前の開発版を利用した場合は、旧サービス名 `com.ebiebimanman.emoji-shortcut` または `com.emoji-shortcut.app` の項目が残っていることがあります。
+macOSの「システム設定 → プライバシーとセキュリティ」から、Emojichaoのアクセシビリティおよび入力監視権限を取り消せます。APIキーはmacOSの「キーチェーンアクセス」で、サービス名 `com.emojichao.app` の項目を削除すると消去できます。公開前の開発版を利用した場合は、旧サービス名 `com.ebiebimanman.emoji-shortcut` または `com.emoji-shortcut.app` の項目が残っていることがあります。
 
 ## 問い合わせ
 

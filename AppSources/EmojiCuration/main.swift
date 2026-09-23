@@ -35,7 +35,7 @@ final class CurationModel {
         decisionsURL = projectRoot.appendingPathComponent("emoji-curation-decisions.json")
         curatedURL = resources.appendingPathComponent("emoji-catalog-curated.json")
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("EmojiShortcut", isDirectory: true)
+            .appendingPathComponent("Emojichao", isDirectory: true)
         try? FileManager.default.createDirectory(at: appSupport, withIntermediateDirectories: true)
         sharedCuratedURL = appSupport.appendingPathComponent("emoji-catalog-curated.json")
         let data = try Data(contentsOf: catalogURL)
@@ -154,7 +154,7 @@ final class CurationApp: NSObject, NSApplicationDelegate {
             let model = try CurationModel()
             let view = CurationView(model: model)
             window = NSWindow(contentRect: view.bounds, styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
-            window.title = "EmojiShortcut 絵文字仕分け"
+            window.title = "Emojichao 絵文字仕分け"
             window.contentView = view
             window.isReleasedWhenClosed = false
             window.center()

@@ -21,7 +21,7 @@ sh scripts/release.sh
 - [ ] Apple公証が成功している
 - [ ] 公証チケットがステープルされている
 - [ ] Gatekeeper検証が成功している
-- [ ] `dist/EmojiShortcut-x.y.z.zip`を別のMacで展開・起動できる
+- [ ] `dist/Emojichao-x.y.z.zip`を別のMacで展開・起動できる
 - [ ] SHA-256チェックサムが生成されている
 
 ## GitHub

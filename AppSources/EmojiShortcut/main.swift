@@ -191,7 +191,7 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
         self.providerName = providerName
         super.init(contentRect: NSRect(x: 0, y: 0, width: 440, height: 230),
                    styleMask: [.titled, .closable], backing: .buffered, defer: true)
-        title = "EmojiShortcut 設定"
+        title = "Emojichao 設定"
         isReleasedWhenClosed = false
         delegate = self
         setupView()
@@ -319,7 +319,7 @@ final class PermissionDragPanel: NSPanel {
         iconView.image = NSApp.applicationIconImage
         iconView.imageScaling = .scaleProportionallyUpOrDown
         iconView.frame = NSRect(x: 150, y: 42, width: 60, height: 60)
-        iconView.toolTip = "EmojiShortcutをドラッグ"
+        iconView.toolTip = "Emojichaoをドラッグ"
         contentView?.addSubview(label)
         contentView?.addSubview(iconView)
     }
@@ -969,7 +969,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private func installMonitor(requestPermissions: Bool = true) {
         NSLog(
-            "EmojiShortcut permission state: accessibility=%@ inputMonitoring=%@ eventPosting=%@",
+            "Emojichao permission state: accessibility=%@ inputMonitoring=%@ eventPosting=%@",
             AXIsProcessTrusted() ? "yes" : "no",
             CGPreflightListenEventAccess() ? "yes" : "no",
             CGPreflightPostEventAccess() ? "yes" : "no"
@@ -982,14 +982,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if requestPermissions {
             let options = ["AXTrustedCheckOptionPrompt": true] as CFDictionary
             if !AXIsProcessTrustedWithOptions(options) {
-                NSLog("EmojiShortcut requires Accessibility permission to replace text in other apps.")
+                NSLog("Emojichao requires Accessibility permission to replace text in other apps.")
             }
             if !CGPreflightListenEventAccess() {
-                NSLog("EmojiShortcut requires Input Monitoring permission to observe keyboard events.")
+                NSLog("Emojichao requires Input Monitoring permission to observe keyboard events.")
                 CGRequestListenEventAccess()
             }
             if !CGPreflightPostEventAccess() {
-                NSLog("EmojiShortcut requires permission to post replacement events.")
+                NSLog("Emojichao requires permission to post replacement events.")
                 CGRequestPostEventAccess()
             }
         }

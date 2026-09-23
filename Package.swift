@@ -2,10 +2,10 @@
 import PackageDescription
 
 let package = Package(
-    name: "EmojiShortcut",
+    name: "Emojichao",
     platforms: [.macOS(.v13)],
     products: [
-        .executable(name: "EmojiShortcut", targets: ["EmojiShortcut"]),
+        .executable(name: "Emojichao", targets: ["EmojiShortcut"]),
         .executable(name: "EmojiCuration", targets: ["EmojiCuration"])
     ],
     targets: [

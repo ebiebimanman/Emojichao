@@ -1,11 +1,11 @@
 #!/bin/sh
 set -eu
 
-notary_profile="${NOTARY_PROFILE:-EmojiShortcut-Notary}"
+notary_profile="${NOTARY_PROFILE:-Emojichao-Notary}"
 version="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' AppInfo.plist)"
-app_path=".build/EmojiShortcut.app"
+app_path=".build/Emojichao.app"
 dist_dir="dist"
-archive_path="$dist_dir/EmojiShortcut-$version.zip"
+archive_path="$dist_dir/Emojichao-$version.zip"
 checksum_path="$archive_path.sha256"
 
 mkdir -p "$dist_dir"
@@ -27,4 +27,3 @@ shasum -a 256 "$archive_path" > "$checksum_path"
 
 echo "Release ready: $archive_path"
 echo "Checksum: $checksum_path"
-

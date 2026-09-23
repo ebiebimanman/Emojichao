@@ -30,13 +30,13 @@ else
     swift build -c debug
     bin_dir="$(swift build -c debug --show-bin-path)"
 fi
-app_dir=".build/EmojiShortcut.app"
-staging_dir=".build/EmojiShortcut-next.app"
+app_dir=".build/Emojichao.app"
+staging_dir=".build/Emojichao-next.app"
 rm -rf "$staging_dir"
 mkdir -p "$staging_dir/Contents/MacOS" "$staging_dir/Contents/Resources"
-cp "$bin_dir/EmojiShortcut" "$staging_dir/Contents/MacOS/EmojiShortcut"
+cp "$bin_dir/Emojichao" "$staging_dir/Contents/MacOS/Emojichao"
 cp AppInfo.plist "$staging_dir/Contents/Info.plist"
-cp -R "$bin_dir/EmojiShortcut_EmojiShortcut.bundle" "$staging_dir/Contents/Resources/"
+cp -R "$bin_dir/Emojichao_EmojiShortcut.bundle" "$staging_dir/Contents/Resources/"
 cp AppSources/EmojiShortcut/Resources/Icons/AppIcon.icns "$staging_dir/Contents/Resources/AppIcon.icns"
 if [ "$mode" = release ]; then
     codesign --force --deep --options runtime --timestamp --sign "$signing_identity" "$staging_dir"

@@ -1,4 +1,4 @@
-# EmojiShortcut
+# Emojichao
 
 AzooKeyなどの日本語IMEと共存する、Slack風の絵文字ショートコード補完アプリです。macOSのメニューバーで動作します。
 
@@ -19,9 +19,9 @@ AzooKeyなどの日本語IMEと共存する、Slack風の絵文字ショート�
 
 ## インストール
 
-1. GitHubの「Releases」から最新の `EmojiShortcut-x.y.z.zip` をダウンロードします。
-2. ZIPを展開し、`EmojiShortcut.app` を「アプリケーション」フォルダへ移動します。
-3. EmojiShortcutを起動します。
+1. GitHubの「Releases」から最新の `Emojichao-x.y.z.zip` をダウンロードします。
+2. ZIPを展開し、`Emojichao.app` を「アプリケーション」フォルダへ移動します。
+3. Emojichaoを起動します。
 4. 画面の案内に従い、アクセシビリティと入力監視を許可します。
 5. 権限を許可した後、一度終了してから再起動します。
 
@@ -51,7 +51,7 @@ AzooKeyなどの日本語IMEと共存する、Slack風の絵文字ショート�
 
 ## 必要な権限と安全性
 
-EmojiShortcutは、他のアプリでショートコードを検知して置き換えるため、アクセシビリティと入力監視の権限を必要とします。
+Emojichaoは、他のアプリでショートコードを検知して置き換えるため、アクセシビリティと入力監視の権限を必要とします。
 
 置き換え前に画面上の対象文字を確認し、安全に確認できない場合は入力を変更しません。パスワードまたはセキュア入力欄と判断できる場所では、文脈を読み取りません。ただし、OSや対象アプリが入力欄の性質を正しく公開しない可能性もあるため、機密情報を扱う入力欄ではアプリを一時停止するか権限を無効にしてください。
 
@@ -68,7 +68,7 @@ EmojiShortcutは、他のアプリでショートコードを検知して置き�
 - Jev以外のAIモデル（Gemini Flashなど）も利用できるようにする
 - 絵文字検索のトリガーを `:` から変更できるようにする
 - ライトモードとダークモードを切り替えられるようにする
-- 指定したアプリではEmojiShortcutを無効にできるようにする
+- 指定したアプリではEmojichaoを無効にできるようにする
 - よく使う絵文字を検索結果の上部に表示する
 - 辞書機能を追加する
 
@@ -79,7 +79,7 @@ EmojiShortcutは、他のアプリでショートコードを検知して置き�
 ```sh
 swift test
 sh build-app.sh
-open .build/EmojiShortcut.app
+open .build/Emojichao.app
 ```
 
 開発用の署名証明書がない場合はアドホック署名になります。この場合、再ビルドのたびにmacOSからアクセシビリティ、入力監視、キーチェーンの許可を再確認されることがあります。
@@ -89,7 +89,7 @@ open .build/EmojiShortcut.app
 配布にはApple Developer ProgramのDeveloper ID Application証明書が必要です。最初の一度だけ公証用資格情報をキーチェーンへ登録します。
 
 ```sh
-xcrun notarytool store-credentials "EmojiShortcut-Notary"
+xcrun notarytool store-credentials "Emojichao-Notary"
 ```
 
 `AppInfo.plist`のバージョンとビルド番号を更新した後、次を実行します。
