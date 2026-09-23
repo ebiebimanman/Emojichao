@@ -1,0 +1,49 @@
+name: 不具合報告
+description: EmojiShortcutの不具合を報告します
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: APIキー、入力内容、個人情報は貼り付けないでください。
+  - type: input
+    id: version
+    attributes:
+      label: EmojiShortcutのバージョン
+      placeholder: 例：0.1.0
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOSのバージョンとMacの種類
+      placeholder: 例：macOS 15.6 / Apple Silicon
+    validations:
+      required: true
+  - type: input
+    id: application
+    attributes:
+      label: 入力していたアプリ
+      placeholder: 例：TextEdit、Chrome、Slack、iTerm
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 再現手順
+      description: 秘密情報を含まないテスト用の文字列で説明してください。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期待した結果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 実際の結果
+    validations:
+      required: true
+

@@ -1,0 +1,23 @@
+.DS_Store
+.build/
+.swiftpm/
+DerivedData/
+*.xcuserstate
+xcuserdata/
+
+# Local signing and notarization material must never be committed.
+*.cer
+*.p12
+*.pem
+*.key
+*.mobileprovision
+.env
+.env.*
+notarytool-profile*
+
+# Local release output.
+dist/
+
+# Synced ChatGPT project reference material (see AGENTS.md).
+sources/
+AGENTS.md
