@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.ebiebimanman.emoji-shortcut</string>
+	<string>com.emojichao.app</string>
 	<key>CFBundleName</key>
 	<string>EmojiShortcut</string>
 	<key>CFBundlePackageType</key>

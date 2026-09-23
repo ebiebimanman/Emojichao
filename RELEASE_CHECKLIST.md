@@ -4,7 +4,7 @@
 
 - [ ] ソースコードの配布条件を確認し、READMEおよび必要な場合は`LICENSE`と一致している
 - [ ] 著作権者名が `2026 ebiebimanman` で統一されている
-- [ ] Bundle IDとKeychainのサービス名が正式な値で一致している
+- [ ] Bundle IDとKeychainのサービス名が `com.emojichao.app` で一致している
 - [ ] `CFBundleShortVersionString`と`CFBundleVersion`を更新した
 - [ ] `swift test`が成功する
 - [ ] `Tests/AppCompatibilityChecklist.md`を実アプリで確認した

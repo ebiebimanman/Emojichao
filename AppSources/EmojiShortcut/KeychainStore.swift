@@ -2,8 +2,11 @@ import Foundation
 import Security
 
 enum KeychainStore {
-    private static let service = "com.ebiebimanman.emoji-shortcut"
-    private static let legacyService = "com.emoji-shortcut.app"
+    private static let service = "com.emojichao.app"
+    private static let legacyServices = [
+        "com.ebiebimanman.emoji-shortcut",
+        "com.emoji-shortcut.app"
+    ]
     enum Provider {
         case jev
 
@@ -15,8 +18,15 @@ enum KeychainStore {
     }
 
     static func read(for provider: Provider = .jev) -> String? {
-        read(service: service, account: provider.account)
-            ?? read(service: legacyService, account: provider.account)
+        if let value = read(service: service, account: provider.account) {
+            return value
+        }
+        for legacyService in legacyServices {
+            if let value = read(service: legacyService, account: provider.account) {
+                return value
+            }
+        }
+        return nil
     }
 
     private static func read(service: String, account: String) -> String? {

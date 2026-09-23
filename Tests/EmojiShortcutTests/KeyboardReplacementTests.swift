@@ -44,7 +44,7 @@ final class KeyboardReplacementTests: XCTestCase {
         defer { pasteboard.releaseGlobally() }
         let item = NSPasteboardItem()
         XCTAssertTrue(item.setString("original", forType: .string))
-        let customType = NSPasteboard.PasteboardType("com.ebiebimanman.emoji-shortcut.test-data")
+        let customType = NSPasteboard.PasteboardType("com.emojichao.test-data")
         XCTAssertTrue(item.setData(Data([1, 2, 3]), forType: customType))
         XCTAssertTrue(pasteboard.writeObjects([item]))
 
