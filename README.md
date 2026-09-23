@@ -89,8 +89,12 @@ open .build/Emojichao.app
 配布にはApple Developer ProgramのDeveloper ID Application証明書が必要です。最初の一度だけ公証用資格情報をキーチェーンへ登録します。
 
 ```sh
-xcrun notarytool store-credentials "Emojichao-Notary"
+xcrun notarytool store-credentials "Emojichao-Notary" \
+  --apple-id "Apple Accountのメールアドレス" \
+  --team-id "35L6K3N86W"
 ```
+
+Apple Accountの通常のパスワードではなく、`account.apple.com`で作成したアプリ用パスワードを、コマンド実行後の入力欄へ入力します。資格情報はmacOSキーチェーンへ保存され、ソースコードやリリースファイルには含まれません。
 
 `AppInfo.plist`のバージョンとビルド番号を更新した後、次を実行します。
 
