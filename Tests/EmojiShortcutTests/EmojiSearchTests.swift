@@ -118,7 +118,9 @@ final class EmojiSearchTests: XCTestCase {
     }
 
     func testJevStateSendsOnlyTheTextBeingJudged() {
-        XCTAssertEqual(JevClient.state(query: "omedetou", context: nil), "omedetou")
+        XCTAssertEqual(JevClient.state(query: "omedetou", context: nil), "omedetou（おめでとう）")
+        XCTAssertEqual(JevClient.state(query: "nayamu", context: nil), "nayamu（なやむ）")
+        XCTAssertEqual(JevClient.state(query: "いいね", context: nil), "いいね")
         XCTAssertEqual(
             JevClient.state(query: "", context: "めっちゃサイコー"),
             "めっちゃサイコー"
