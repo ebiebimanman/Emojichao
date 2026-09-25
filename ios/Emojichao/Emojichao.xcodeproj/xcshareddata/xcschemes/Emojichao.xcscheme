@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "000000000000000100000000"
-               BuildableName = "MyApp.app"
-               ReferencedContainer = "container:Untitled Project.xcodeproj">
+               BuildableName = "Emojichao.app"
+               ReferencedContainer = "container:Emojichao.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "000000000000000100000000"
-            BuildableName = "MyApp.app"
-            ReferencedContainer = "container:Untitled Project.xcodeproj">
+            BuildableName = "Emojichao.app"
+            ReferencedContainer = "container:Emojichao.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -61,8 +61,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "000000000000000100000000"
-            BuildableName = "MyApp.app"
-            ReferencedContainer = "container:Untitled Project.xcodeproj">
+            BuildableName = "Emojichao.app"
+            ReferencedContainer = "container:Emojichao.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

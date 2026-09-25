@@ -2,8 +2,9 @@
 
 An add-on keyboard (switch to it with the globe key, same as Gboard/Simeji)
 that searches emoji by the word you're currently typing — no explicit
-trigger needed. Typing is **romaji-to-hiragana only** (no Latin/English
-mode, no kanji conversion — see "Known limitations" below). It reuses the
+trigger needed. The keys copy the iPhone's own **日本語かな** keyboard (12-key
+flick layout with トグル input, 小゛゜, and ABC/☆123 modes), without kanji
+conversion — see "Known limitations" below. It reuses the
 exact catalog/scoring/Jev logic from the macOS app via the `EmojiCatalogCore`
 Swift package (`EmojiCatalogCore/` at the repo root — kept as its own
 standalone package, separate from this repo's root `Package.swift`,
@@ -17,8 +18,8 @@ but expect a few small mistakes on first build.
 ## What's here
 
 - `EmojichaoKeyboard/KeyboardViewController.swift` — the `UIInputViewController`
-  subclass: draws a lowercase QWERTY-shaped key layout, converts typed
-  romaji to hiragana as you go, tracks the word being typed since the last
+  subclass: draws the iPhone 日本語かな key layout (→/↺/ABC/🌐 on the left,
+  the あかさ… grid, ⌫/空白/改行 on the right), tracks the word being typed since the last
   boundary (space/return/punctuation), and shows matches in a candidate
   strip above the keys, updated on every keystroke. Tapping a candidate
   deletes the typed word and inserts the emoji in its place. Extension-only
@@ -27,13 +28,18 @@ but expect a few small mistakes on first build.
   scrolling row of tappable emoji candidates, drawn by the extension itself
   (neither iOS nor Android give third-party keyboards a way to inject into
   the system's own predictive-text bar). Extension-only.
-- `EmojichaoKeyboard/RomajiConverter.swift` — the romaji→hiragana table and
-  incremental conversion logic (handles きゃ/しゃ-style combos, っ via
-  doubled consonants, ん). Extension-only.
+- `EmojichaoKeyboard/FlickKeyLayout.swift` — the key tables for the kana,
+  alphabet and number modes (flick directions, トグル cycles, 小゛゜ / a/A
+  transforms). Extension-only.
+- `EmojichaoKeyboard/FlickKeyButton.swift` — the flick key itself: tells a
+  tap from a flick in four directions. Extension-only.
 - `EmojichaoShared/JevKeyStore.swift` — reads/writes the Jev API key in an
   App Group–shared `UserDefaults`, so the container app (where it's typed
   in) and the extension (where it's used) can both reach it. **Add this one
   file to BOTH targets.**
+- `EmojichaoShared/KeyboardSettings.swift` — keyboard options set in the
+  app (currently フリックのみ), read by the extension through the same App
+  Group. **Add this one to BOTH targets too.**
 - `EmojichaoApp/ContentView.swift` — a drop-in replacement for the container
   app template's `ContentView.swift`: onboarding text plus the Jev API key
   field. Container-app-only.
@@ -79,12 +85,7 @@ has fixed it before.
 
 ## Known limitations
 
-- **No Latin/English typing at all.** Every letter key produces romaji that
-  gets converted to hiragana — there's no mode to type plain English. This
-  was a deliberate simplification, not an oversight: supporting both would
-  need a shift/mode-switch key and case handling, and the priority here was
-  Japanese input working well, not feature completeness.
-- **No kanji conversion.** This is romaji→hiragana only, not a real
+- **No kanji conversion.** Kana go straight into the document; this is not a real
   Japanese IME — かな漢字変換 needs a dictionary-backed conversion engine,
   which is out of scope for this project. The emoji search itself still
   works fine on hiragana input, since `EmojiCatalog.localMatches` already
@@ -95,4 +96,10 @@ has fixed it before.
 - **Jev requires two separate opt-ins** (a saved API key, and "Allow Full
   Access" in Settings) by design — the keyboard never asks for either on its
   own, and works local-only if neither is set.
-- No shift/caps, symbols page, or autocorrect on the key layout itself.
+- No autocorrect, kaomoji (^^) key, or flick guide ring — the flick preview
+  is a single bubble beside the key.
+- The 空白 / emoji-globe slots are drawn as blank, inert keys; the
+  system's own globe below the keyboard switches keyboards.
+- 左寄せ / 通常 / 右寄せ is picked from buttons in the candidate strip while
+  no word is being typed, since third-party keyboards can't add items to
+  the system globe key's long-press menu.

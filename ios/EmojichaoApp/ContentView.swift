@@ -1,10 +1,12 @@
 import SwiftUI
 
 /// Drop-in replacement for the container app's default ContentView.swift.
-/// Just onboarding text plus the Jev API key field — the keyboard extension
-/// does the actual work.
+/// Onboarding text, keyboard options, and the Jev API key field — the
+/// keyboard extension does the actual work.
 struct ContentView: View {
     @State private var apiKey: String = JevKeyStore.read() ?? ""
+    @AppStorage(KeyboardSettings.flickOnlyKey, store: KeyboardSettings.defaults)
+    private var flickOnly = KeyboardSettings.flickOnlyDefault
     @State private var statusMessage: String?
 
     var body: some View {
@@ -16,6 +18,12 @@ struct ContentView: View {
                     Text("設定 → 一般 → キーボード → キーボード → 新しいキーボードを追加、でEmojichaoキーボードを有効化してください。テキスト入力中に地球儀キーで切り替えて使えます。")
                         .font(.footnote)
                         .foregroundStyle(.secondary)
+                }
+
+                Section {
+                    Toggle("フリックのみ", isOn: $flickOnly)
+                } header: {
+                    Text("キーボード")
                 }
 
                 Section("Jev（任意の意味検索）") {

@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		73AFD1333066811D00DDAB50 /* EmojiCatalogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 73AFD1323066811D00DDAB50 /* EmojiCatalogCore */; };
 		73AFD135306681FE00DDAB50 /* EmojiCatalogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 73AFD134306681FE00DDAB50 /* EmojiCatalogCore */; };
-		73F03277306678E500B1B175 /* Emojichao.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 73F03270306678E500B1B175 /* Emojichao.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		73F03277306678E500B1B175 /* EmojichaoKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -18,7 +18,7 @@
 			containerPortal = 000000000000000000000000 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 73F0326F306678E500B1B175;
-			remoteInfo = Emojichao;
+			remoteInfo = EmojichaoKeyboard;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -28,40 +28,40 @@
 			dstPath = "";
 			dstSubfolder = PlugIns;
 			files = (
-				73F03277306678E500B1B175 /* Emojichao.appex in Embed Foundation Extensions */,
+				73F03277306678E500B1B175 /* EmojichaoKeyboard.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		000000000000000000000120 /* MyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		73F03270306678E500B1B175 /* Emojichao.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Emojichao.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		73F032803066808300B1B175 /* EmojiCatalogCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EmojiCatalogCore; path = "../../EmojiCatalogCore"; sourceTree = "<group>"; };
+		000000000000000000000120 /* Emojichao.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Emojichao.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = EmojichaoKeyboard.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		73F032803066808300B1B175 /* EmojiCatalogCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EmojiCatalogCore; path = ../../EmojiCatalogCore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		73F03278306678E500B1B175 /* Exceptions for "Emojichao" folder in "Emojichao" target */ = {
+		73F03278306678E500B1B175 /* Exceptions for "EmojichaoKeyboard" folder in "EmojichaoKeyboard" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 73F0326F306678E500B1B175 /* Emojichao */;
+			target = 73F0326F306678E500B1B175 /* EmojichaoKeyboard */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		000000000000000000000010 /* MyApp */ = {
+		000000000000000000000010 /* Emojichao */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = MyApp;
+			path = Emojichao;
 			sourceTree = "<group>";
 		};
-		73F03271306678E500B1B175 /* Emojichao */ = {
+		73F03271306678E500B1B175 /* EmojichaoKeyboard */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				73F03278306678E500B1B175 /* Exceptions for "Emojichao" folder in "Emojichao" target */,
+				73F03278306678E500B1B175 /* Exceptions for "EmojichaoKeyboard" folder in "EmojichaoKeyboard" target */,
 			);
-			path = Emojichao;
+			path = EmojichaoKeyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -85,8 +85,8 @@
 		000000000000000000000001 = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000010 /* MyApp */,
-				73F03271306678E500B1B175 /* Emojichao */,
+				000000000000000000000010 /* Emojichao */,
+				73F03271306678E500B1B175 /* EmojichaoKeyboard */,
 				73F0327F3066808300B1B175 /* Frameworks */,
 				000000000000000000000020 /* Products */,
 			);
@@ -95,8 +95,8 @@
 		000000000000000000000020 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				000000000000000000000120 /* MyApp.app */,
-				73F03270306678E500B1B175 /* Emojichao.appex */,
+				000000000000000000000120 /* Emojichao.app */,
+				73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,9 +112,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		000000000000000100000000 /* MyApp */ = {
+		000000000000000100000000 /* Emojichao */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 000000000000000110000000 /* Build configuration list for PBXNativeTarget "MyApp" */;
+			buildConfigurationList = 000000000000000110000000 /* Build configuration list for PBXNativeTarget "Emojichao" */;
 			buildPhases = (
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
@@ -127,19 +127,19 @@
 				73F03276306678E500B1B175 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				000000000000000000000010 /* MyApp */,
+				000000000000000000000010 /* Emojichao */,
 			);
-			name = MyApp;
+			name = Emojichao;
 			packageProductDependencies = (
 				73AFD134306681FE00DDAB50 /* EmojiCatalogCore */,
 			);
-			productName = MyApp;
-			productReference = 000000000000000000000120 /* MyApp.app */;
+			productName = Emojichao;
+			productReference = 000000000000000000000120 /* Emojichao.app */;
 			productType = "com.apple.product-type.application";
 		};
-		73F0326F306678E500B1B175 /* Emojichao */ = {
+		73F0326F306678E500B1B175 /* EmojichaoKeyboard */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 73F03279306678E500B1B175 /* Build configuration list for PBXNativeTarget "Emojichao" */;
+			buildConfigurationList = 73F03279306678E500B1B175 /* Build configuration list for PBXNativeTarget "EmojichaoKeyboard" */;
 			buildPhases = (
 				73F0326C306678E500B1B175 /* Sources */,
 				73F0326D306678E500B1B175 /* Frameworks */,
@@ -148,14 +148,14 @@
 			buildRules = (
 			);
 			fileSystemSynchronizedGroups = (
-				73F03271306678E500B1B175 /* Emojichao */,
+				73F03271306678E500B1B175 /* EmojichaoKeyboard */,
 			);
-			name = Emojichao;
+			name = EmojichaoKeyboard;
 			packageProductDependencies = (
 				73AFD1323066811D00DDAB50 /* EmojiCatalogCore */,
 			);
-			productName = Emojichao;
-			productReference = 73F03270306678E500B1B175 /* Emojichao.appex */;
+			productName = EmojichaoKeyboard;
+			productReference = 73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -176,7 +176,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 000000000000000010000000 /* Build configuration list for PBXProject "Untitled Project" */;
+			buildConfigurationList = 000000000000000010000000 /* Build configuration list for PBXProject "Emojichao" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -193,8 +193,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				000000000000000100000000 /* MyApp */,
-				73F0326F306678E500B1B175 /* Emojichao */,
+				000000000000000100000000 /* Emojichao */,
+				73F0326F306678E500B1B175 /* EmojichaoKeyboard */,
 			);
 		};
 /* End PBXProject section */
@@ -228,13 +228,13 @@
 /* Begin PBXTargetDependency section */
 		73F03276306678E500B1B175 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 73F0326F306678E500B1B175 /* Emojichao */;
+			target = 73F0326F306678E500B1B175 /* EmojichaoKeyboard */;
 			targetProxy = 73F03275306678E500B1B175 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		000000000000000011000000 /* Debug configuration for PBXProject "Untitled Project" */ = {
+		000000000000000011000000 /* Debug configuration for PBXProject "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -304,7 +304,7 @@
 			};
 			name = Debug;
 		};
-		000000000000000012000000 /* Release configuration for PBXProject "Untitled Project" */ = {
+		000000000000000012000000 /* Release configuration for PBXProject "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -366,9 +366,10 @@
 			};
 			name = Release;
 		};
-		000000000000000111000000 /* Debug configuration for PBXNativeTarget "MyApp" */ = {
+		000000000000000111000000 /* Debug configuration for PBXNativeTarget "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Emojichao/Emojichao.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -377,6 +378,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Emojichao;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -391,24 +393,26 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ebiebimanman.emojichao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		000000000000000112000000 /* Release configuration for PBXNativeTarget "MyApp" */ = {
+		000000000000000112000000 /* Release configuration for PBXNativeTarget "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Emojichao/Emojichao.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
@@ -417,6 +421,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Emojichao;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -431,29 +436,31 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "devplaceholder.$(PROJECT_UNIQUE_VALUE:identifier).$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ebiebimanman.emojichao;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
-		73F0327A306678E500B1B175 /* Debug configuration for PBXNativeTarget "Emojichao" */ = {
+		73F0327A306678E500B1B175 /* Debug configuration for PBXNativeTarget "EmojichaoKeyboard" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = EmojichaoKeyboard/EmojichaoKeyboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 35L6K3N86W;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Emojichao/Info.plist;
+				INFOPLIST_FILE = EmojichaoKeyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Emojichao;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -463,8 +470,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = devplaceholder.NUBHVZAV.MyApp.Emojichao;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ebiebimanman.emojichao.keyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -476,14 +484,15 @@
 			};
 			name = Debug;
 		};
-		73F0327B306678E500B1B175 /* Release configuration for PBXNativeTarget "Emojichao" */ = {
+		73F0327B306678E500B1B175 /* Release configuration for PBXNativeTarget "EmojichaoKeyboard" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = EmojichaoKeyboard/EmojichaoKeyboard.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 35L6K3N86W;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Emojichao/Info.plist;
+				INFOPLIST_FILE = EmojichaoKeyboard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Emojichao;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
@@ -493,8 +502,9 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = devplaceholder.NUBHVZAV.MyApp.Emojichao;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ebiebimanman.emojichao.keyboard;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -510,27 +520,27 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		000000000000000010000000 /* Build configuration list for PBXProject "Untitled Project" */ = {
+		000000000000000010000000 /* Build configuration list for PBXProject "Emojichao" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000011000000 /* Debug configuration for PBXProject "Untitled Project" */,
-				000000000000000012000000 /* Release configuration for PBXProject "Untitled Project" */,
+				000000000000000011000000 /* Debug configuration for PBXProject "Emojichao" */,
+				000000000000000012000000 /* Release configuration for PBXProject "Emojichao" */,
 			);
 			defaultConfigurationName = Release;
 		};
-		000000000000000110000000 /* Build configuration list for PBXNativeTarget "MyApp" */ = {
+		000000000000000110000000 /* Build configuration list for PBXNativeTarget "Emojichao" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				000000000000000111000000 /* Debug configuration for PBXNativeTarget "MyApp" */,
-				000000000000000112000000 /* Release configuration for PBXNativeTarget "MyApp" */,
+				000000000000000111000000 /* Debug configuration for PBXNativeTarget "Emojichao" */,
+				000000000000000112000000 /* Release configuration for PBXNativeTarget "Emojichao" */,
 			);
 			defaultConfigurationName = Release;
 		};
-		73F03279306678E500B1B175 /* Build configuration list for PBXNativeTarget "Emojichao" */ = {
+		73F03279306678E500B1B175 /* Build configuration list for PBXNativeTarget "EmojichaoKeyboard" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				73F0327A306678E500B1B175 /* Debug configuration for PBXNativeTarget "Emojichao" */,
-				73F0327B306678E500B1B175 /* Release configuration for PBXNativeTarget "Emojichao" */,
+				73F0327A306678E500B1B175 /* Debug configuration for PBXNativeTarget "EmojichaoKeyboard" */,
+				73F0327B306678E500B1B175 /* Release configuration for PBXNativeTarget "EmojichaoKeyboard" */,
 			);
 			defaultConfigurationName = Release;
 		};

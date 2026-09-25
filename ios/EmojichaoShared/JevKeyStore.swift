@@ -11,7 +11,7 @@ import Foundation
 /// Add this one file to BOTH targets' membership (unlike the other files in
 /// ios/, which belong to only one target each).
 enum JevKeyStore {
-    static let appGroupID = "group.com.emojichao.shared"
+    static let appGroupID = "group.com.ebiebimanman.emojichao"
     private static let key = "JevAPIKey"
 
     private static var defaults: UserDefaults? {
