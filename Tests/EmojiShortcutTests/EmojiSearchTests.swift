@@ -1,6 +1,5 @@
 import XCTest
 @testable import EmojiCatalogCore
-@testable import EmojiShortcut
 
 final class EmojiSearchTests: XCTestCase {
     func testOmedDoesNotMatchDromedaryKeyword() {

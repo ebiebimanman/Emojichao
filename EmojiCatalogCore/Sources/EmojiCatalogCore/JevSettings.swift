@@ -1,15 +1,15 @@
 import Foundation
 
-enum JevSearchMode: String {
+public enum JevSearchMode: String {
     case context
     case text
 }
 
-enum JevSettings {
-    static let searchModeKey = "JevSearchMode"
+public enum JevSettings {
+    public static let searchModeKey = "JevSearchMode"
     private static let legacySendPrecedingTextKey = "SendPrecedingTextToJev"
 
-    static func searchMode(using defaults: UserDefaults = .standard) -> JevSearchMode {
+    public static func searchMode(using defaults: UserDefaults = .standard) -> JevSearchMode {
         if let value = defaults.string(forKey: searchModeKey),
            let mode = JevSearchMode(rawValue: value) {
             return mode
@@ -20,7 +20,7 @@ enum JevSettings {
         return .text
     }
 
-    static func setSearchMode(_ mode: JevSearchMode, using defaults: UserDefaults = .standard) {
+    public static func setSearchMode(_ mode: JevSearchMode, using defaults: UserDefaults = .standard) {
         defaults.set(mode.rawValue, forKey: searchModeKey)
     }
 }

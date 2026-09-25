@@ -1,13 +1,13 @@
 import Foundation
 import Security
 
-enum KeychainStore {
+public enum KeychainStore {
     private static let service = "com.emojichao.app"
     private static let legacyServices = [
         "com.ebiebimanman.emoji-shortcut",
         "com.emoji-shortcut.app"
     ]
-    enum Provider {
+    public enum Provider {
         case jev
 
         var account: String {
@@ -17,7 +17,7 @@ enum KeychainStore {
         }
     }
 
-    static func read(for provider: Provider = .jev) -> String? {
+    public static func read(for provider: Provider = .jev) -> String? {
         if let value = read(service: service, account: provider.account) {
             return value
         }
@@ -43,7 +43,7 @@ enum KeychainStore {
         return String(data: data, encoding: .utf8)
     }
 
-    static func save(_ key: String, for provider: Provider = .jev) -> Bool {
+    public static func save(_ key: String, for provider: Provider = .jev) -> Bool {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
