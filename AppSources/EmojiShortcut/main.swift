@@ -137,6 +137,37 @@ final class CandidatePanel: NSPanel {
         onSelection?(candidates[selectedIndex])
     }
 
+    func positionNear(_ caretRect: NSRect?) {
+        guard let caretRect else {
+            setFrameOrigin(NSEvent.mouseLocation)
+            return
+        }
+        let screen = NSScreen.screens.first(where: { $0.frame.intersects(caretRect) })
+            ?? NSScreen.main
+        guard let visibleFrame = screen?.visibleFrame else {
+            setFrameOrigin(caretRect.origin)
+            return
+        }
+        setFrameOrigin(Self.preferredOrigin(
+            anchor: caretRect, panelSize: frame.size, visibleFrame: visibleFrame
+        ))
+    }
+
+    static func preferredOrigin(
+        anchor: NSRect, panelSize: NSSize, visibleFrame: NSRect
+    ) -> NSPoint {
+        let gap: CGFloat = 6
+        let minimumX = visibleFrame.minX
+        let maximumX = max(minimumX, visibleFrame.maxX - panelSize.width)
+        let x = min(max(anchor.minX, minimumX), maximumX)
+        let below = anchor.minY - panelSize.height - gap
+        let above = anchor.maxY + gap
+        let preferredY = below >= visibleFrame.minY ? below : above
+        let maximumY = max(visibleFrame.minY, visibleFrame.maxY - panelSize.height)
+        let y = min(max(preferredY, visibleFrame.minY), maximumY)
+        return NSPoint(x: x, y: y)
+    }
+
 }
 
 extension CandidatePanel: NSTableViewDataSource, NSTableViewDelegate {
@@ -182,6 +213,7 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
         target: nil,
         action: nil
     )
+    private let disabledAppsView = DisabledAppsView()
     private let providerName: String
     var onSave: ((String) -> Bool)?
     var onSetLaunchAtLogin: ((Bool) -> LaunchAtLogin.State)?
@@ -189,7 +221,7 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
 
     init(providerName: String) {
         self.providerName = providerName
-        super.init(contentRect: NSRect(x: 0, y: 0, width: 440, height: 230),
+        super.init(contentRect: NSRect(x: 0, y: 0, width: 440, height: 470),
                    styleMask: [.titled, .closable], backing: .buffered, defer: true)
         title = "Emojichao 設定"
         isReleasedWhenClosed = false
@@ -210,8 +242,19 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
         separator.boxType = .separator
         launchAtLoginCheckbox.target = self
         launchAtLoginCheckbox.action = #selector(toggleLaunchAtLogin)
+        let disabledAppsSeparator = NSBox()
+        disabledAppsSeparator.boxType = .separator
+        let disabledAppsHeading = NSTextField(labelWithString: "Emojichaoを無効にするアプリ")
+        disabledAppsHeading.font = .systemFont(ofSize: 15, weight: .semibold)
+        let disabledAppsNote = NSTextField(
+            wrappingLabelWithString: "Slackのように独自の絵文字入力を持つアプリでは、"
+                + "こちらに追加するとEmojichaoの「:」入力は動きません。"
+        )
+        disabledAppsNote.font = .systemFont(ofSize: 11)
+        disabledAppsNote.textColor = .secondaryLabelColor
         for view in [heading, apiKeyField, saveButton, statusLabel, separator,
-                     launchAtLoginCheckbox] {
+                     launchAtLoginCheckbox, disabledAppsSeparator, disabledAppsHeading,
+                     disabledAppsNote, disabledAppsView] {
             view.translatesAutoresizingMaskIntoConstraints = false
             root.addSubview(view)
         }
@@ -222,15 +265,31 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
             apiKeyField.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -24),
             apiKeyField.topAnchor.constraint(equalTo: heading.bottomAnchor, constant: 10),
             apiKeyField.heightAnchor.constraint(equalToConstant: 28),
+            saveButton.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
+            saveButton.topAnchor.constraint(equalTo: apiKeyField.bottomAnchor, constant: 10),
             statusLabel.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
-            statusLabel.topAnchor.constraint(equalTo: apiKeyField.bottomAnchor, constant: 10),
+            statusLabel.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
             separator.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
             separator.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
-            separator.topAnchor.constraint(equalTo: statusLabel.bottomAnchor, constant: 18),
+            separator.topAnchor.constraint(equalTo: saveButton.bottomAnchor, constant: 18),
             launchAtLoginCheckbox.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
             launchAtLoginCheckbox.topAnchor.constraint(equalTo: separator.bottomAnchor, constant: 16),
-            saveButton.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
-            saveButton.bottomAnchor.constraint(equalTo: root.bottomAnchor, constant: -20)
+            disabledAppsSeparator.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
+            disabledAppsSeparator.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
+            disabledAppsSeparator.topAnchor.constraint(
+                equalTo: launchAtLoginCheckbox.bottomAnchor, constant: 16),
+            disabledAppsHeading.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
+            disabledAppsHeading.topAnchor.constraint(
+                equalTo: disabledAppsSeparator.bottomAnchor, constant: 16),
+            disabledAppsNote.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
+            disabledAppsNote.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
+            disabledAppsNote.topAnchor.constraint(
+                equalTo: disabledAppsHeading.bottomAnchor, constant: 6),
+            disabledAppsView.leadingAnchor.constraint(equalTo: heading.leadingAnchor),
+            disabledAppsView.trailingAnchor.constraint(equalTo: apiKeyField.trailingAnchor),
+            disabledAppsView.topAnchor.constraint(
+                equalTo: disabledAppsNote.bottomAnchor, constant: 10),
+            disabledAppsView.bottomAnchor.constraint(equalTo: root.bottomAnchor, constant: -20)
         ])
     }
 
@@ -238,6 +297,7 @@ final class SettingsPanel: NSPanel, NSWindowDelegate {
         apiKeyField.stringValue = apiKey ?? ""
         statusLabel.stringValue = apiKey == nil ? "APIキーを入力してください" : "APIキーは設定済みです"
         applyLaunchAtLoginState(launchAtLoginState)
+        disabledAppsView.reload()
         center()
         NSApp.activate(ignoringOtherApps: true)
         makeKeyAndOrderFront(nil)
@@ -304,13 +364,19 @@ final class PermissionDragPanel: NSPanel {
 
     init() {
         super.init(contentRect: NSRect(x: 0, y: 0, width: 360, height: 210),
-                   styleMask: [.titled, .closable, .nonactivatingPanel],
+                   styleMask: [.borderless, .nonactivatingPanel],
                    backing: .buffered, defer: true)
-        title = "EmojiShortcutを追加"
         isFloatingPanel = true
         isReleasedWhenClosed = false
         hidesOnDeactivate = false
         level = .floating
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = true
+        contentView?.wantsLayer = true
+        contentView?.layer?.backgroundColor = NSColor.windowBackgroundColor.cgColor
+        contentView?.layer?.cornerRadius = 14
+        contentView?.layer?.masksToBounds = true
         let label = NSTextField(labelWithString: "システム設定の「入力監視」にアイコンをドラッグ&ドロップしてください")
         label.alignment = .center
         label.maximumNumberOfLines = 3
@@ -382,7 +448,9 @@ final class PermissionSetupPanel: NSPanel {
         title = ""
         isReleasedWhenClosed = false
         level = .floating
-        hasShadow = true
+        isOpaque = false
+        backgroundColor = .clear
+        hasShadow = false
         hidesOnDeactivate = false
         isMovableByWindowBackground = true
         setupView()
@@ -418,12 +486,12 @@ final class PermissionSetupPanel: NSPanel {
             root.addSubview(view)
         }
         NSLayoutConstraint.activate([
-            accessibilityCheck.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 48), accessibilityCheck.topAnchor.constraint(equalTo: root.topAnchor, constant: 48), accessibilityCheck.widthAnchor.constraint(equalToConstant: 16), accessibilityCheck.heightAnchor.constraint(equalToConstant: 16),
+            accessibilityCheck.leadingAnchor.constraint(equalTo: root.leadingAnchor, constant: 48), accessibilityCheck.centerYAnchor.constraint(equalTo: accessibilityDescription.centerYAnchor), accessibilityCheck.widthAnchor.constraint(equalToConstant: 16), accessibilityCheck.heightAnchor.constraint(equalToConstant: 16),
             accessibilityStatus.leadingAnchor.constraint(equalTo: accessibilityCheck.trailingAnchor, constant: 12), accessibilityStatus.topAnchor.constraint(equalTo: root.topAnchor, constant: 42), accessibilityStatus.trailingAnchor.constraint(equalTo: root.trailingAnchor, constant: -48), accessibilityStatus.heightAnchor.constraint(equalToConstant: 26),
             accessibilityDescription.leadingAnchor.constraint(equalTo: accessibilityStatus.leadingAnchor), accessibilityDescription.topAnchor.constraint(equalTo: accessibilityStatus.bottomAnchor, constant: 4),
             accessibilityButton.leadingAnchor.constraint(equalTo: root.leadingAnchor), accessibilityButton.trailingAnchor.constraint(equalTo: root.trailingAnchor), accessibilityButton.topAnchor.constraint(equalTo: root.topAnchor), accessibilityButton.bottomAnchor.constraint(equalTo: accessibilityDescription.bottomAnchor, constant: 12),
-            inputMonitoringCheck.leadingAnchor.constraint(equalTo: accessibilityCheck.leadingAnchor), inputMonitoringCheck.topAnchor.constraint(equalTo: accessibilityDescription.bottomAnchor, constant: 36), inputMonitoringCheck.widthAnchor.constraint(equalToConstant: 16), inputMonitoringCheck.heightAnchor.constraint(equalToConstant: 16),
-            inputMonitoringStatus.leadingAnchor.constraint(equalTo: accessibilityStatus.leadingAnchor), inputMonitoringStatus.centerYAnchor.constraint(equalTo: inputMonitoringCheck.centerYAnchor), inputMonitoringStatus.trailingAnchor.constraint(equalTo: accessibilityStatus.trailingAnchor), inputMonitoringStatus.heightAnchor.constraint(equalToConstant: 26),
+            inputMonitoringCheck.leadingAnchor.constraint(equalTo: accessibilityCheck.leadingAnchor), inputMonitoringCheck.centerYAnchor.constraint(equalTo: inputDescription.centerYAnchor), inputMonitoringCheck.widthAnchor.constraint(equalToConstant: 16), inputMonitoringCheck.heightAnchor.constraint(equalToConstant: 16),
+            inputMonitoringStatus.leadingAnchor.constraint(equalTo: accessibilityStatus.leadingAnchor), inputMonitoringStatus.topAnchor.constraint(equalTo: accessibilityDescription.bottomAnchor, constant: 36), inputMonitoringStatus.trailingAnchor.constraint(equalTo: accessibilityStatus.trailingAnchor), inputMonitoringStatus.heightAnchor.constraint(equalToConstant: 26),
             inputDescription.leadingAnchor.constraint(equalTo: inputMonitoringStatus.leadingAnchor), inputDescription.topAnchor.constraint(equalTo: inputMonitoringStatus.bottomAnchor, constant: 4),
             inputButton.leadingAnchor.constraint(equalTo: root.leadingAnchor), inputButton.trailingAnchor.constraint(equalTo: root.trailingAnchor), inputButton.topAnchor.constraint(equalTo: inputMonitoringStatus.topAnchor, constant: -8), inputButton.bottomAnchor.constraint(equalTo: inputDescription.bottomAnchor, constant: 8)
         ])
@@ -507,6 +575,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var apiKeyMenuItem: NSMenuItem!
     private var contextSearchModeMenuItem: NSMenuItem?
     private var textSearchModeMenuItem: NSMenuItem?
+    private var disabledAppMenuItem: NSMenuItem?
+    /// The app the keystrokes belong to. The menu bar can make Emojichao
+    /// itself frontmost, so the toggle keeps addressing the app the user was
+    /// typing in.
+    private var lastActiveApplication: NSRunningApplication?
+    private var isDisabledForActiveApp = false
     private var permissionMenuItems: [NSMenuItem] = []
     private lazy var permissionDragPanel = PermissionDragPanel()
     private lazy var permissionSetupPanel = PermissionSetupPanel()
@@ -517,6 +591,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var systemSettingsLaunchObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        if CommandLine.arguments.contains("--unicode-probe") {
+            runUnicodeInputLaunchProbe()
+            return
+        }
+        let guideCompleted = UserDefaults.standard.bool(
+            forKey: "PermissionSetupGuideV3Completed"
+        )
+        let launchDiagnostic = "Emojichao launch permissions: accessibility=\(AXIsProcessTrusted()) inputMonitoring=\(CGPreflightListenEventAccess()) eventPosting=\(CGPreflightPostEventAccess()) guideCompleted=\(guideCompleted)\n"
+        if let data = launchDiagnostic.data(using: .utf8) {
+            try? FileHandle.standardError.write(contentsOf: data)
+        }
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         configureStatusItemButton()
         let menu = NSMenu()
@@ -555,8 +640,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(textItem)
         refreshSearchModeMenu()
         menu.addItem(.separator())
+        let disabledAppItem = NSMenuItem(
+            title: "このアプリでは無効にする",
+            action: #selector(toggleDisabledForActiveApp),
+            keyEquivalent: ""
+        )
+        disabledAppItem.target = self
+        disabledAppMenuItem = disabledAppItem
+        menu.addItem(disabledAppItem)
+        refreshDisabledAppMenu()
+        menu.addItem(.separator())
         menu.addItem(apiKeyMenuItem)
         menu.addItem(settingsItem)
+        let unicodeProbeItem = NSMenuItem(
+            title: "実験: 🤓をUnicode入力",
+            action: #selector(runUnicodeInputProbe),
+            keyEquivalent: ""
+        )
+        unicodeProbeItem.target = self
+        unicodeProbeItem.toolTip = "クリップボードを使わず、直前のアプリへUnicodeキーイベントを送ります"
+        menu.addItem(unicodeProbeItem)
         let permissionSeparator = NSMenuItem.separator()
         menu.addItem(permissionSeparator)
         let permissionsHeader = NSMenuItem(title: "権限と動作状況", action: nil, keyEquivalent: "")
@@ -604,12 +707,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             forName: NSWorkspace.didActivateApplicationNotification,
             object: nil,
             queue: .main
-        ) { [weak self] _ in
+        ) { [weak self] notification in
+            let application = notification.userInfo?[NSWorkspace.applicationUserInfoKey]
+                as? NSRunningApplication
             Task { @MainActor in
+                ShortcutReplacement.enableManualAccessibility(for: application)
+                self?.trackActiveApplication(application)
                 self?.lastTypedCharacter = nil
                 self?.cancelShortcut()
             }
         }
+        NotificationCenter.default.addObserver(
+            forName: DisabledApps.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            Task { @MainActor in
+                self?.refreshDisabledState()
+                self?.cancelShortcut()
+            }
+        }
+        trackActiveApplication(NSWorkspace.shared.frontmostApplication)
         permissionSetupPanel.onOpenAccessibility = { [weak self] in self?.requestAccessibilityFromSetup() }
         permissionSetupPanel.onOpenInputMonitoring = { [weak self] in self?.requestInputMonitoringFromSetup() }
         permissionSetupPanel.onContinue = { [weak self] in self?.handlePermissionSetupContinue() }
@@ -930,6 +1048,144 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         textSearchModeMenuItem?.state = mode == .text ? .on : .off
     }
 
+    @objc private func runUnicodeInputProbe() {
+        guard let target = lastActiveApplication else {
+            toastPanel.show(
+                title: "Unicode入力に失敗しました",
+                message: "先に入力欄を選んでから、もう一度試してください",
+                symbolName: "exclamationmark.triangle",
+                duration: 5,
+                on: statusItem.button?.window?.screen
+            )
+            return
+        }
+        guard UnicodeTextInjection.requestEventPostingAccess() else {
+            toastPanel.show(
+                title: "Unicode入力には許可が必要です",
+                message: "macOSの案内に従ってEmojichaoを許可してください",
+                symbolName: "hand.raised",
+                duration: 6,
+                on: statusItem.button?.window?.screen
+            )
+            return
+        }
+        let result = UnicodeTextInjection.insert("🤓", into: target)
+        if case .failure(let failure) = result {
+            toastPanel.show(
+                title: "Unicode入力に失敗しました",
+                message: failure.message,
+                symbolName: "exclamationmark.triangle",
+                duration: 5,
+                on: statusItem.button?.window?.screen
+            )
+        }
+    }
+
+    private func runUnicodeInputLaunchProbe() {
+        let arguments = CommandLine.arguments
+        let targetBundleIdentifier = arguments.firstIndex(of: "--target-bundle-id").flatMap {
+            arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil
+        }
+        let target = targetBundleIdentifier.flatMap {
+            NSRunningApplication.runningApplications(withBundleIdentifier: $0).first
+        } ?? NSWorkspace.shared.frontmostApplication
+        let targetDescription = target.map {
+            "\($0.bundleIdentifier ?? "unknown") pid=\($0.processIdentifier)"
+        } ?? "none"
+        let accessBeforeRequest = CGPreflightPostEventAccess()
+        guard UnicodeTextInjection.requestEventPostingAccess() else {
+            finishUnicodeInputLaunchProbe(
+                result: .failure(.eventPostingDenied),
+                accessBeforeRequest: accessBeforeRequest,
+                targetDescription: targetDescription
+            )
+            return
+        }
+        guard let target else {
+            finishUnicodeInputLaunchProbe(
+                result: .failure(.invalidTarget),
+                accessBeforeRequest: accessBeforeRequest,
+                targetDescription: targetDescription
+            )
+            return
+        }
+        target.activate(options: [.activateIgnoringOtherApps])
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            self.finishUnicodeInputLaunchProbe(
+                result: UnicodeTextInjection.insert("🤓", into: target),
+                accessBeforeRequest: accessBeforeRequest,
+                targetDescription: targetDescription
+            )
+        }
+    }
+
+    private func finishUnicodeInputLaunchProbe(
+        result: Result<Void, UnicodeTextInjection.Failure>,
+        accessBeforeRequest: Bool,
+        targetDescription: String
+    ) {
+        let resultDescription: String
+        switch result {
+        case .success:
+            resultDescription = "posted"
+            FileHandle.standardError.write(Data("unicode-probe: posted 🤓\n".utf8))
+        case .failure(let failure):
+            resultDescription = "failed: \(failure.message)"
+            FileHandle.standardError.write(
+                Data("unicode-probe: failed: \(failure.message)\n".utf8)
+            )
+        }
+        let diagnostic = "access=\(accessBeforeRequest) target=\(targetDescription) result=\(resultDescription)\n"
+        let diagnosticURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("emojichao-unicode-probe.txt")
+        try? diagnostic.write(to: diagnosticURL, atomically: true, encoding: .utf8)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+            NSApp.terminate(nil)
+        }
+    }
+
+    private func trackActiveApplication(_ application: NSRunningApplication?) {
+        if let application, application.processIdentifier != getpid() {
+            lastActiveApplication = application
+        }
+        refreshDisabledState()
+    }
+
+    /// Reading the disabled list once per app switch keeps the keystroke path
+    /// free of both defaults lookups and Accessibility queries.
+    private func refreshDisabledState() {
+        isDisabledForActiveApp = DisabledApps.isDisabled(
+            NSWorkspace.shared.frontmostApplication?.bundleIdentifier
+        )
+        refreshDisabledAppMenu()
+    }
+
+    private func refreshDisabledAppMenu() {
+        guard let item = disabledAppMenuItem else { return }
+        guard let application = lastActiveApplication,
+              let bundleIdentifier = DisabledApps.canonical(application.bundleIdentifier) else {
+            item.title = "このアプリでは無効にする"
+            item.state = .off
+            item.action = nil
+            return
+        }
+        let name = application.localizedName ?? bundleIdentifier
+        item.title = "「\(name)」では無効にする"
+        item.state = DisabledApps.isDisabled(bundleIdentifier) ? .on : .off
+        item.action = #selector(toggleDisabledForActiveApp)
+    }
+
+    @objc private func toggleDisabledForActiveApp() {
+        guard let bundleIdentifier = DisabledApps.canonical(
+            lastActiveApplication?.bundleIdentifier
+        ) else { return }
+        DisabledApps.setDisabled(
+            !DisabledApps.isDisabled(bundleIdentifier), for: bundleIdentifier
+        )
+        cancelShortcut()
+        refreshDisabledState()
+    }
+
     @objc private func retryMonitor() {
         guard AXIsProcessTrusted(), CGPreflightListenEventAccess(), CGPreflightPostEventAccess() else {
             let alert = NSAlert()
@@ -1014,6 +1270,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, eventTap, 0)
         CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
         CGEvent.tapEnable(tap: eventTap, enable: true)
+        ShortcutReplacement.enableManualAccessibility(for: NSWorkspace.shared.frontmostApplication)
+        NSLog(
+            "Emojichao input monitor installed: enabled=%@",
+            CGEvent.tapIsEnabled(tap: eventTap) ? "yes" : "no"
+        )
     }
 
     private static let eventTapCallback: CGEventTapCallBack = { _, type, event, userInfo in
@@ -1031,7 +1292,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             return Unmanaged.passUnretained(event)
         }
         if type == .leftMouseDown || type == .rightMouseDown {
-            MainActor.assumeIsolated { delegate.cancelShortcut() }
+            MainActor.assumeIsolated {
+                // A click can move the caret to an unrelated text field or
+                // start editing text inside a canvas-style editor.
+                // The character remembered from the old caret must not decide
+                // whether ':' is allowed at the new insertion point.
+                delegate.lastTypedCharacter = nil
+                delegate.cancelShortcut()
+            }
             return Unmanaged.passUnretained(event)
         }
         if event.getIntegerValueField(.eventSourceUserData) == KeyboardReplacement.syntheticEventMarker {
@@ -1043,6 +1311,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let keyCode = nsEvent.keyCode
         let characters = nsEvent.characters ?? ""
         let modifiers = nsEvent.modifierFlags
+        if characters == ":" || characters == "：" {
+            let application = NSWorkspace.shared.frontmostApplication
+            NSLog(
+                "Emojichao trigger received: app=%@ keyCode=%d",
+                application?.bundleIdentifier ?? "unknown",
+                keyCode
+            )
+        }
         let consumed = MainActor.assumeIsolated {
             delegate.handle(keyCode: keyCode, characters: characters, modifiers: modifiers)
         }
@@ -1050,6 +1326,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     private func handle(keyCode: UInt16, characters chars: String, modifiers: NSEvent.ModifierFlags) -> Bool {
+        // Apps the user turned Emojichao off in keep every key, including the
+        // ones a pending shortcut would otherwise swallow. Slack and other
+        // chat clients answer ':' with their own emoji picker.
+        if isDisabledForActiveApp { return false }
         if isBlockingKeyboardInput {
             if var pending = pendingTextSearchResume,
                let resume = EmojiSearchPolicy.textSearchResume(
@@ -1167,31 +1447,47 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         guard !chars.isEmpty else { return false }
         guard chars == ":" || chars == "：" else {
-            lastTypedCharacter = chars.last
+            lastTypedCharacter = ShortcutReplacement.trackedCharacter(from: chars)
             return false
         }
-        guard previousCharacterAllowsTrigger() else { return false }
+        let boundary = triggerBoundary(for: chars)
+        guard boundary != .rejected else { return false }
         activeShortcut = chars
         shortcutTarget = ShortcutReplacement.focusedElement()
         shortcutTargetApplication = NSWorkspace.shared.frontmostApplication
         let shouldReadContext = JevSettings.searchMode() == .context
         shortcutContext = nil
         lastTypedCharacter = chars.last
-        panel.setFrameOrigin(NSEvent.mouseLocation)
-        if shouldReadContext {
+        panel.positionNear(ShortcutReplacement.caretScreenRect(in: shortcutTarget))
+        let needsHalfWidthCheck = boundary == .halfWidthOnly
+        if shouldReadContext || needsHalfWidthCheck {
             contextCaptureGeneration += 1
             let generation = contextCaptureGeneration
             let target = shortcutTarget
+            if !shouldReadContext { updateCandidates() }
             Task { [weak self] in
                 // Let ':' reach the editor first so a Japanese IME can commit
                 // its marked text before AX is queried.
                 try? await Task.sleep(for: .milliseconds(50))
                 guard let self,
                       self.contextCaptureGeneration == generation,
-                      self.activeShortcut == chars else { return }
+                      self.activeShortcut != nil else { return }
+                // The IME turned ':' into '：', so this is prose such as
+                // 「日時：」, not a shortcut. Unreadable editors keep it.
+                if needsHalfWidthCheck,
+                   let visible = ShortcutReplacement.contextBeforeCaret(in: target, maxCharacters: 60),
+                   ShortcutReplacement.lastTriggerIsFullWidth(in: visible) {
+                    self.cancelShortcut()
+                    return
+                }
+                guard shouldReadContext, self.activeShortcut == chars else { return }
                 self.shortcutContext = ShortcutReplacement.contextBeforeTrigger(
                     in: target, trigger: chars
                 )
+                NSLog("Emojichao context capture: app=%@ visible=%@ context=%@",
+                      NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "unknown",
+                      String(reflecting: ShortcutReplacement.contextBeforeCaret(in: target, maxCharacters: 11)),
+                      String(reflecting: self.shortcutContext))
                 self.updateCandidates()
             }
         } else {
@@ -1200,9 +1496,21 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    private func previousCharacterAllowsTrigger() -> Bool {
-        guard let previous = lastTypedCharacter else { return true }
-        return previous == " " || previous == "\u{3000}" || previous == "\n" || previous == "\r"
+    private func triggerBoundary(for trigger: String) -> ShortcutReplacement.TriggerBoundary {
+        let beforeCaret = ShortcutReplacement.characterBeforeCaret(
+            in: ShortcutReplacement.focusedElement()
+        )
+        NSLog("Emojichao trigger check: beforeCaret=%@ lastTyped=%@",
+              String(reflecting: beforeCaret),
+              String(reflecting: lastTypedCharacter))
+        switch beforeCaret {
+        case .character(let previous):
+            return ShortcutReplacement.triggerBoundary(after: previous, trigger: trigger)
+        case .start:
+            return .allowed
+        case .unavailable:
+            return ShortcutReplacement.triggerBoundary(after: lastTypedCharacter, trigger: trigger)
+        }
     }
 
     private func updateCandidates() {
@@ -1841,6 +2149,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate: NSMenuDelegate {
     func menuWillOpen(_ menu: NSMenu) {
         refreshPermissionMenu()
+        refreshDisabledAppMenu()
     }
 }
 
