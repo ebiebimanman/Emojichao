@@ -37,7 +37,7 @@
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* MyApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		73F03270306678E500B1B175 /* Emojichao.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = Emojichao.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		73F032803066808300B1B175 /* EmojiCatalogCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EmojiCatalogCore; path = "../../../../../.codex/.chatgpt-projects/g-p-6ab0c132a74481918ffa2e32e334f91f/EmojiCatalogCore"; sourceTree = "<group>"; };
+		73F032803066808300B1B175 /* EmojiCatalogCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = EmojiCatalogCore; path = "../../EmojiCatalogCore"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
