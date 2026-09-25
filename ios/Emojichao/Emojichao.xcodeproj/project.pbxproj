@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		73AFD1333066811D00DDAB50 /* EmojiCatalogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 73AFD1323066811D00DDAB50 /* EmojiCatalogCore */; };
 		73AFD135306681FE00DDAB50 /* EmojiCatalogCore in Frameworks */ = {isa = PBXBuildFile; productRef = 73AFD134306681FE00DDAB50 /* EmojiCatalogCore */; };
+		73AFD143306690AA00DDAB50 /* KanaKanjiConverterModuleWithDefaultDictionary in Frameworks */ = {isa = PBXBuildFile; productRef = 73AFD142306690AA00DDAB50 /* KanaKanjiConverterModuleWithDefaultDictionary */; };
 		73F03277306678E500B1B175 /* EmojichaoKeyboard.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -77,6 +78,7 @@
 			isa = PBXFrameworksBuildPhase;
 			files = (
 				73AFD1333066811D00DDAB50 /* EmojiCatalogCore in Frameworks */,
+				73AFD143306690AA00DDAB50 /* KanaKanjiConverterModuleWithDefaultDictionary in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -153,6 +155,7 @@
 			name = EmojichaoKeyboard;
 			packageProductDependencies = (
 				73AFD1323066811D00DDAB50 /* EmojiCatalogCore */,
+				73AFD142306690AA00DDAB50 /* KanaKanjiConverterModuleWithDefaultDictionary */,
 			);
 			productName = EmojichaoKeyboard;
 			productReference = 73F03270306678E500B1B175 /* EmojichaoKeyboard.appex */;
@@ -186,7 +189,9 @@
 			mainGroup = 000000000000000000000001;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../../../../.codex/.chatgpt-projects/g-p-6ab0c132a74481918ffa2e32e334f91f/EmojiCatalogCore" */,
+				73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../EmojiCatalogCore" */,
+				73AFD140306690AA00DDAB50 /* XCRemoteSwiftPackageReference "AzooKeyKanaKanjiConverter" */,
+				73AFD141306690AA00DDAB50 /* XCRemoteSwiftPackageReference "swift-collections" */,
 			);
 			preferredProjectObjectVersion = 90;
 			productRefGroup = 000000000000000000000020 /* Products */;
@@ -369,14 +374,14 @@
 		000000000000000111000000 /* Debug configuration for PBXNativeTarget "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Emojichao/Emojichao.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 35L6K3N86W;
 				ENABLE_APP_SANDBOX = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -414,14 +419,14 @@
 		000000000000000112000000 /* Release configuration for PBXNativeTarget "Emojichao" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Emojichao/Emojichao.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = 35L6K3N86W;
 				ENABLE_APP_SANDBOX = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -551,11 +556,31 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../../../../.codex/.chatgpt-projects/g-p-6ab0c132a74481918ffa2e32e334f91f/EmojiCatalogCore" */ = {
+		73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../EmojiCatalogCore" */ = {
 			isa = XCLocalSwiftPackageReference;
-			relativePath = "../../../../../.codex/.chatgpt-projects/g-p-6ab0c132a74481918ffa2e32e334f91f/EmojiCatalogCore";
+			relativePath = ../../EmojiCatalogCore;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		73AFD140306690AA00DDAB50 /* XCRemoteSwiftPackageReference "AzooKeyKanaKanjiConverter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/azooKey/AzooKeyKanaKanjiConverter";
+			requirement = {
+				kind = upToNextMinorVersion;
+				minimumVersion = 0.11.2;
+			};
+		};
+		73AFD141306690AA00DDAB50 /* XCRemoteSwiftPackageReference "swift-collections" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-collections";
+			requirement = {
+				kind = versionRange;
+				maximumVersion = 1.3.0;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		73AFD1323066811D00DDAB50 /* EmojiCatalogCore */ = {
@@ -564,8 +589,13 @@
 		};
 		73AFD134306681FE00DDAB50 /* EmojiCatalogCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../../../../.codex/.chatgpt-projects/g-p-6ab0c132a74481918ffa2e32e334f91f/EmojiCatalogCore" */;
+			package = 73F03281306680E800B1B175 /* XCLocalSwiftPackageReference "../../EmojiCatalogCore" */;
 			productName = EmojiCatalogCore;
+		};
+		73AFD142306690AA00DDAB50 /* KanaKanjiConverterModuleWithDefaultDictionary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 73AFD140306690AA00DDAB50 /* XCRemoteSwiftPackageReference "AzooKeyKanaKanjiConverter" */;
+			productName = KanaKanjiConverterModuleWithDefaultDictionary;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

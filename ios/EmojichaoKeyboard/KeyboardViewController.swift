@@ -1,12 +1,13 @@
 import EmojiCatalogCore
 import UIKit
 
-/// A minimal add-on keyboard (switched to via the globe key, same as
-/// Gboard/Simeji) that searches emoji by the word you're currently typing,
-/// no explicit trigger needed. The keys copy the iPhone's own 日本語かな
+/// A Japanese keyboard (switched to via the globe key, same as
+/// Gboard/Simeji) whose candidate row offers emoji for what you're typing
+/// alongside the kanji conversions. The keys copy the iPhone's own 日本語かな
 /// keyboard: a 12-key flick layout with 小゛゜, ABC/☆123 modes, the
-/// "フリックのみ" option, and the one-handed (左右寄せ) layout. There is no
-/// kanji conversion — kana go straight into the document.
+/// "フリックのみ" option, and the one-handed (左右寄せ) layout. Kana are held
+/// as marked text (未確定文字) and converted on-device by KanaKanjiEngine;
+/// ABC/☆123 input goes straight into the document.
 ///
 /// Local matching always works with no network access. If the user grants
 /// "Allow Full Access" and has saved a Jev API key (via the container app's
@@ -31,9 +32,17 @@ final class KeyboardViewController: UIInputViewController {
     private var mode: KeyboardMode = .kana
     private var flickOnly = KeyboardSettings.flickOnly
     private var handedness = KeyboardHandedness.saved
-    /// The word typed so far since the last word boundary (punctuation,
-    /// or the cursor moving away).
+    private let engine = KanaKanjiEngine()
+    /// The conversion picked with 次候補, shown in place of the reading.
+    private var selectedConversion: Int?
+    private weak var spaceKey: UIButton?
+    private weak var returnKey: UIButton?
+    /// An ABC/☆123 word typed straight into the document since the last
+    /// word boundary; kana are tracked by `engine` instead.
     private var currentWord = ""
+    /// The text the emoji row is currently for, so a late Jev answer for
+    /// something older is dropped.
+    private var emojiQuery = ""
     /// The last tap on a flick key, so tapping it again soon replaces that
     /// character with the next one in the key's cycle (か → き → く …).
     /// Cleared by anything else. Never set in フリックのみ mode.
@@ -45,16 +54,29 @@ final class KeyboardViewController: UIInputViewController {
     private let jev = JevClient()
     private var jevPacer = SearchRequestPacer(minimumInterval: 0.5)
     private var searchGeneration = 0
+    /// The Jev request waiting for typing to pause.
+    private var pendingJevSearch: Task<Void, Never>?
+    /// Ask Jev only once typing pauses this long, so the word as finally
+    /// typed is always sent (not one keystroke short) and half-typed
+    /// words don't use up the quota.
+    private static let jevDebounce: TimeInterval = 0.3
+    /// Past this, the pacer is in a rate-limit cooldown: stay local.
+    private static let jevMaxWait: TimeInterval = 2
     private var backspaceRepeat: Timer?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         candidateStrip.delegate = self
         candidateStrip.showHandednessPicker(current: handedness)
+        engine.onCandidatesChanged = { [weak self] in self?.showCandidates() }
+        engine.warmUp()
 
         // Custom keyboard extensions can otherwise report a zero-height view
         // on first layout; an explicit height is the standard workaround.
-        view.heightAnchor.constraint(equalToConstant: 270).isActive = true
+        // Keys keep their 216pt; the candidate rows (conversions, then
+        // emoji) sit on top.
+        let stripHeight = EmojiCandidateStripView.rowHeight * 2 + 1
+        view.heightAnchor.constraint(equalToConstant: 216 + stripHeight + 10).isActive = true
 
         view.addSubview(candidateStrip)
         view.addSubview(keyContainer)
@@ -67,7 +89,7 @@ final class KeyboardViewController: UIInputViewController {
             candidateStrip.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             candidateStrip.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             candidateStrip.topAnchor.constraint(equalTo: view.topAnchor),
-            candidateStrip.heightAnchor.constraint(equalToConstant: 44),
+            candidateStrip.heightAnchor.constraint(equalToConstant: stripHeight),
 
             keyLeading,
             keyTrailing,
@@ -90,6 +112,13 @@ final class KeyboardViewController: UIInputViewController {
         rebuildKeys()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Switching keyboards or dismissing mid-composition keeps what's
+        // shown, like the stock keyboard.
+        commitComposition()
+    }
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // The setting may have changed in the app since the last time.
@@ -104,7 +133,7 @@ final class KeyboardViewController: UIInputViewController {
     // MARK: - Key layout
 
     /// Five columns like the iPhone keyboard: function keys on the left,
-    /// the 3×4 character grid, then ⌫, the (blank) 空白 slot, and 改行.
+    /// the 3×4 character grid, then ⌫, 空白 and 改行.
     private func rebuildKeys() {
         keyContainer.subviews.forEach { $0.removeFromSuperview() }
 
@@ -157,11 +186,14 @@ final class KeyboardViewController: UIInputViewController {
         backspace.addAction(UIAction { [weak self] _ in self?.startBackspaceRepeat() }, for: .touchDown)
         backspace.addAction(UIAction { [weak self] _ in self?.stopBackspaceRepeat() }, for: [.touchUpOutside, .touchCancel])
 
-        // Same shape as the stock 空白, but blank and inert.
-        let space = makeBlankKey(color: KeyColors.character)
-        // Always a plain line break, even where the stock key would read
-        // 検索 or 送信 and submit the field instead.
-        let returnKey = makeKey(title: "改行") { [weak self] in self?.insertNewline() }
+        let space = makeKey(title: "空白") { [weak self] in self?.handleSpace() }
+        space.backgroundColor = KeyColors.character
+        // Reads 確定 while composing; otherwise always a plain line break,
+        // even where the stock key would read 検索 or 送信.
+        let returnKey = makeKey(title: "改行") { [weak self] in self?.handleReturn() }
+        spaceKey = space
+        self.returnKey = returnKey
+        updateActionKeyTitles()
 
         let stack = UIStackView(arrangedSubviews: [backspace, space, returnKey])
         stack.axis = .vertical
@@ -260,7 +292,7 @@ final class KeyboardViewController: UIInputViewController {
     private func setHandedness(_ newValue: KeyboardHandedness) {
         handedness = newValue
         handedness.save()
-        if currentWord.isEmpty { candidateStrip.showHandednessPicker(current: handedness) }
+        if currentWord.isEmpty && !engine.isComposing { candidateStrip.showHandednessPicker(current: handedness) }
         UIView.animate(withDuration: 0.2) {
             self.applyHandedness()
             self.view.layoutIfNeeded()
@@ -312,21 +344,43 @@ final class KeyboardViewController: UIInputViewController {
     /// 小゛゜ / a/A: transform the character just before the cursor.
     private func handleModifier() {
         toggle = nil
-        guard let last = textDocumentProxy.documentContextBeforeInput?.last,
+        let before = engine.isComposing ? engine.reading : textDocumentProxy.documentContextBeforeInput
+        guard let last = before?.last,
               let next = CharacterModifier.next(after: last, in: mode) else { return }
         replaceLastCharacter(with: String(next))
     }
 
     private func switchMode(to newMode: KeyboardMode) {
         toggle = nil
+        commitComposition()
         mode = newMode
         rebuildKeys()
     }
 
     private func handleBackspace() {
         toggle = nil
+        if engine.isComposing {
+            // First ⌫ after 次候補 goes back to the reading, as on iPhone.
+            if selectedConversion != nil {
+                selectedConversion = nil
+            } else {
+                engine.deleteBackward()
+            }
+            if engine.isComposing {
+                refreshComposition()
+            } else {
+                textDocumentProxy.setMarkedText("", selectedRange: NSRange(location: 0, length: 0))
+                textDocumentProxy.unmarkText()
+                endWord()
+            }
+            return
+        }
         textDocumentProxy.deleteBackward()
-        guard !currentWord.isEmpty else { return }
+        guard !currentWord.isEmpty else {
+            // Editing past a committed conversion: its emoji no longer fit.
+            endWord()
+            return
+        }
         currentWord.removeLast()
         updateCandidates(for: currentWord)
     }
@@ -352,17 +406,50 @@ final class KeyboardViewController: UIInputViewController {
     // MARK: - Typing and word search
 
     private func typeCharacter(_ character: String) {
-        textDocumentProxy.insertText(character)
-        trackTyped(character)
+        guard mode == .kana else {
+            textDocumentProxy.insertText(character)
+            trackTyped(character)
+            return
+        }
+        // Typing on after picking a conversion keeps that conversion.
+        if selectedConversion != nil { commitComposition() }
+        engine.insert(character)
+        refreshComposition()
     }
 
-    private func insertNewline() {
+    /// 空白: 次候補 while composing, a space otherwise.
+    private func handleSpace() {
         toggle = nil
+        if engine.isComposing {
+            let count = engine.candidateTexts.count
+            guard engine.candidatesAreCurrent, count > 0 else { return }
+            selectedConversion = ((selectedConversion ?? -1) + 1) % count
+            showMarkedComposition()
+            candidateStrip.selectConversion(selectedConversion)
+            return
+        }
+        textDocumentProxy.insertText(" ")
+        endWord()
+    }
+
+    /// 改行: 確定 while composing, a line break otherwise.
+    private func handleReturn() {
+        toggle = nil
+        if engine.isComposing {
+            commitComposition()
+            return
+        }
         textDocumentProxy.insertText("\n")
         endWord()
     }
 
     private func replaceLastCharacter(with character: String) {
+        if engine.isComposing {
+            selectedConversion = nil
+            engine.replaceLast(with: character)
+            refreshComposition()
+            return
+        }
         textDocumentProxy.deleteBackward()
         if !currentWord.isEmpty { currentWord.removeLast() }
         typeCharacter(character)
@@ -383,48 +470,138 @@ final class KeyboardViewController: UIInputViewController {
             candidateStrip.showHandednessPicker(current: handedness)
             return
         }
+        emojiQuery = query
         candidateStrip.update(candidates: EmojiSuggestions.candidates(for: query))
         searchRemote(for: query)
     }
 
+    // MARK: - Composition (未確定文字)
+
+    /// The reading, or the 次候補 pick in its place.
+    private var displayedComposition: String {
+        guard let selectedConversion else { return engine.reading }
+        return engine.preview(at: selectedConversion)
+    }
+
+    private func showMarkedComposition() {
+        let text = displayedComposition
+        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: (text as NSString).length, length: 0))
+    }
+
+    /// After the reading changed: redraw it now; the candidate rows follow
+    /// once the conversions are in (`showCandidates`).
+    private func refreshComposition() {
+        showMarkedComposition()
+        updateActionKeyTitles()
+        if engine.candidatesAreCurrent { showCandidates() }
+    }
+
+    /// Fill the rows with the conversions and emoji for the best one.
+    private func showCandidates() {
+        guard engine.isComposing else { return }
+        let reading = engine.reading
+        let conversions = engine.candidateTexts
+        candidateStrip.update(
+            conversions: conversions,
+            selected: selectedConversion,
+            emoji: EmojiSuggestions.candidates(for: reading, conversions: engine.readingConversions)
+        )
+        // Jev gets the reading with its top conversions, e.g.
+        // なく（無く・泣く・鳴く）: the dictionary's first pick alone can be
+        // the wrong word (無く), and the reading alone loses the kanji's
+        // meaning in longer sentences.
+        let alternatives = engine.readingConversions.filter { $0 != reading }.prefix(3)
+        let query = alternatives.isEmpty ? reading : "\(reading)（\(alternatives.joined(separator: "・"))）"
+        emojiQuery = query
+        searchRemote(for: query)
+    }
+
+    /// Put `text` into the document in place of the marked composition.
+    private func replaceComposition(with text: String) {
+        textDocumentProxy.setMarkedText(text, selectedRange: NSRange(location: (text as NSString).length, length: 0))
+        textDocumentProxy.unmarkText()
+    }
+
+    /// 確定: keep what's shown (the 次候補 pick, or the reading as typed).
+    private func commitComposition() {
+        guard engine.isComposing else { return }
+        replaceComposition(with: displayedComposition)
+        if let selectedConversion { engine.complete(at: selectedConversion) }
+        engine.reset()
+        selectedConversion = nil
+        keepEmojiLane()
+    }
+
+    /// After a conversion is committed, leave its emoji up (and let a Jev
+    /// answer still land) so one can be added after the text.
+    private func keepEmojiLane() {
+        currentWord = ""
+        updateActionKeyTitles()
+        candidateStrip.update(conversions: [], selected: nil, emoji: candidateStrip.emoji)
+    }
+
+    private func updateActionKeyTitles() {
+        spaceKey?.setTitle(engine.isComposing ? "次候補" : "空白", for: .normal)
+        returnKey?.setTitle(engine.isComposing ? "確定" : "改行", for: .normal)
+    }
+
     private func searchRemote(for query: String) {
+        pendingJevSearch?.cancel()
+        pendingJevSearch = nil
+        let wait = max(Self.jevDebounce, jevPacer.waitDuration(at: Date()))
         guard hasFullAccess, let apiKey = JevKeyStore.read(), !apiKey.isEmpty,
-              EmojiSearchPolicy.shouldSearchRemote(query) else { return }
-        let now = Date()
-        guard jevPacer.waitDuration(at: now) == 0 else { return }
-        jevPacer.recordAttempt(at: now)
+              EmojiSearchPolicy.shouldSearchRemote(query), wait <= Self.jevMaxWait else {
+            // Whatever was pending or in flight is for an older query now.
+            searchGeneration += 1
+            candidateStrip.setLoading(false)
+            return
+        }
         searchGeneration += 1
         let generation = searchGeneration
         candidateStrip.setLoading(true)
-        Task { [weak self] in
-            guard let self else { return }
+        pendingJevSearch = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(wait))
+            guard !Task.isCancelled, let self,
+                  self.searchGeneration == generation, self.emojiQuery == query else { return }
+            self.pendingJevSearch = nil
+            await self.requestJev(query: query, apiKey: apiKey, generation: generation)
+        }
+    }
+
+    private func requestJev(query: String, apiKey: String, generation: Int) async {
+        jevPacer.recordAttempt(at: Date())
+        // What comes before the composition helps Jev read the mood.
+        let context = textDocumentProxy.documentContextBeforeInput.map { String($0.suffix(200)) }
+        do {
             defer {
                 // Only the newest request owns the dots; an older one
                 // finishing late mustn't hide them early.
-                if self.searchGeneration == generation { self.candidateStrip.setLoading(false) }
+                if searchGeneration == generation { candidateStrip.setLoading(false) }
             }
-            do {
-                let ranked = try await self.jev.rank(
-                    query: query, context: nil,
-                    entries: EmojiCatalog.shared.searchableEntries, apiKey: apiKey
-                )
-                guard self.searchGeneration == generation, self.currentWord == query else { return }
-                self.jevPacer.recordSuccess()
-                // An empty ranking would blank the strip; keep what's there.
-                guard !ranked.isEmpty else { return }
-                self.candidateStrip.update(candidates: ranked)
-            } catch JevError.http(429) {
-                self.jevPacer.recordRateLimit(at: Date())
-            } catch {
-                // Network/API trouble: leave the local matches already shown.
-            }
+            let ranked = try await jev.rank(
+                query: query, context: context,
+                entries: EmojiCatalog.shared.searchableEntries, apiKey: apiKey
+            )
+            guard searchGeneration == generation, emojiQuery == query else { return }
+            jevPacer.recordSuccess()
+            // An empty ranking would blank the strip; keep what's there.
+            guard !ranked.isEmpty else { return }
+            candidateStrip.updateEmoji(ranked)
+        } catch JevError.http(429) {
+            jevPacer.recordRateLimit(at: Date())
+        } catch {
+            // Network/API trouble: leave the local matches already shown.
         }
     }
 
     private func endWord() {
+        pendingJevSearch?.cancel()
+        pendingJevSearch = nil
         currentWord = ""
+        emojiQuery = ""
         // Orphan any in-flight Jev request so it can't touch the strip.
         searchGeneration += 1
+        updateActionKeyTitles()
         candidateStrip.showHandednessPicker(current: handedness)
     }
 }
@@ -433,12 +610,34 @@ extension KeyboardViewController: EmojiCandidateStripViewDelegate {
     func candidateStrip(_ stripView: EmojiCandidateStripView, didSelect entry: EmojiEntry) {
         toggle = nil
         EmojiSuggestions.recordPick(entry)
+        if engine.isComposing {
+            // The emoji stands in for the whole composition.
+            replaceComposition(with: entry.emoji)
+            engine.reset()
+            selectedConversion = nil
+            endWord()
+            return
+        }
         // Replace the typed word (if any) with the emoji.
         for _ in 0..<currentWord.count {
             textDocumentProxy.deleteBackward()
         }
         textDocumentProxy.insertText(entry.emoji)
         endWord()
+    }
+
+    func candidateStrip(_ stripView: EmojiCandidateStripView, didSelectConversionAt index: Int) {
+        toggle = nil
+        guard engine.candidatesAreCurrent, engine.candidateTexts.indices.contains(index) else { return }
+        replaceComposition(with: engine.candidateTexts[index])
+        engine.complete(at: index)
+        selectedConversion = nil
+        // A first-clause pick (今日 of きょうはいい) leaves the rest composing.
+        if engine.isComposing {
+            refreshComposition()
+        } else {
+            keepEmojiLane()
+        }
     }
 
     func candidateStrip(_ stripView: EmojiCandidateStripView, didSelect handedness: KeyboardHandedness) {

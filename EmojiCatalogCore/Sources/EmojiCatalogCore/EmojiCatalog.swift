@@ -39,10 +39,8 @@ public struct EmojiEntry: Codable, Hashable, Sendable {
 public final class EmojiCatalog {
     public static let shared = EmojiCatalog()
     private(set) var entries: [EmojiEntry] = []
-
-    public var searchableEntries: [EmojiEntry] {
-        entries.filter { !$0.isFlag }
-    }
+    /// Filtered once at load: this is read on every keystroke of a search.
+    public private(set) var searchableEntries: [EmojiEntry] = []
 
     private init() {
         let applicationSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -61,6 +59,7 @@ public final class EmojiCatalog {
                 break
             }
         }
+        searchableEntries = entries.filter { !$0.isFlag }
     }
 
     public func localMatches(_ query: String) -> [EmojiEntry] {

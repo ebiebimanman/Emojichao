@@ -18,8 +18,9 @@ but expect a few small mistakes on first build.
 ## What's here
 
 - `EmojichaoKeyboard/KeyboardViewController.swift` — the `UIInputViewController`
-  subclass: draws the iPhone 日本語かな key layout (→/↺/ABC/🌐 on the left,
-  the あかさ… grid, ⌫/空白/改行 on the right), tracks the word being typed since the last
+  subclass: draws the iPhone 日本語かな key layout (☆123/ABC/あいう on the
+  left, the あかさ… grid, ⌫/空白/改行 on the right), holds kana as marked
+  text until 確定, tracks the word being typed since the last
   boundary (space/return/punctuation), and shows matches in a candidate
   strip above the keys, updated on every keystroke. Tapping a candidate
   deletes the typed word and inserts the emoji in its place. Extension-only
@@ -31,6 +32,10 @@ but expect a few small mistakes on first build.
 - `EmojichaoKeyboard/FlickKeyLayout.swift` — the key tables for the kana,
   alphabet and number modes (flick directions, トグル cycles, 小゛゜ / a/A
   transforms). Extension-only.
+- `EmojichaoKeyboard/KanaKanjiEngine.swift` — the composing reading and
+  its kanji conversions (wraps AzooKeyKanaKanjiConverter; the keyboard
+  target links its `KanaKanjiConverterModuleWithDefaultDictionary`
+  product). Extension-only.
 - `EmojichaoKeyboard/FlickKeyButton.swift` — the flick key itself: tells a
   tap from a flick in four directions. Extension-only.
 - `EmojichaoShared/JevKeyStore.swift` — reads/writes the Jev API key in an
@@ -85,11 +90,23 @@ has fixed it before.
 
 ## Known limitations
 
-- **No kanji conversion.** Kana go straight into the document; this is not a real
-  Japanese IME — かな漢字変換 needs a dictionary-backed conversion engine,
-  which is out of scope for this project. The emoji search itself still
-  works fine on hiragana input, since `EmojiCatalog.localMatches` already
-  matches Japanese keywords by substring.
+- **Kanji conversion is on-device** via
+  [AzooKeyKanaKanjiConverter](https://github.com/azooKey/AzooKeyKanaKanjiConverter)
+  (MIT) and its default dictionary (Apache-2.0), pinned to 0.11.x. Its
+  swift-collections dependency is capped below 1.3: newer releases call a
+  Swift runtime function (`swift_initBorrow`) that iOS 18/26 don't have,
+  and the keyboard fails to load. The dictionary adds about 38 MB.
+  Conversion quality is plain dictionary-based (no Zenzai); learning from
+  picks is on and stored in the App Group. Conversion runs on a
+  background queue, so keys never wait on it. The package is about 6×
+  slower unoptimized (~80 ms vs ~13 ms per key in the simulator), so both
+  schemes' Run action uses the Release configuration. Emoji are matched on both the
+  converted text (猫) and the reading (ねこ); Jev gets the converted text
+  plus up to 200 characters before the cursor as context.
+- **Only kana compose.** ABC/☆123 input goes straight into the document,
+  with no English prediction. If the host app commits the marked text on
+  its own (e.g. the user taps elsewhere mid-composition), the keyboard
+  doesn't notice and the next keystroke may re-mark the old reading.
 - **The candidate strip updates on every keystroke**, since there's no
   explicit trigger — closer to the "noisy" built-in IME emoji suggestions
   discussed earlier than the macOS app's on-demand ':' search.

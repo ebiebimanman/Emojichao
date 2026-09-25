@@ -48,6 +48,12 @@ struct ContentView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+
+                Section("ライセンス") {
+                    Text("かな漢字変換: AzooKeyKanaKanjiConverter（MIT License）\n辞書: azooKey_dictionary_storage（Apache License 2.0）")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
             }
             .navigationTitle("Emojichao")
         }

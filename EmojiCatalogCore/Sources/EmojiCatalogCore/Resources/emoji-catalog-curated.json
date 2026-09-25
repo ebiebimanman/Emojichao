@@ -470,9 +470,20 @@
     "emoji" : "☺️",
     "englishName" : "smiling face",
     "keywords" : [
-
+      "スマイリー",
+      "スマイル",
+      "ハッピー",
+      "ほっ",
+      "笑顔",
+      "顔",
+      "face",
+      "happy",
+      "outlined",
+      "relaxed",
+      "smile",
+      "smiling"
     ],
-    "name" : "smiling face"
+    "name" : "スマイリー"
   },
   {
     "emoji" : "😚",
@@ -987,17 +998,35 @@
     "emoji" : "🙂‍↔️",
     "englishName" : "head shaking horizontally",
     "keywords" : [
-
+      "いいえ",
+      "不賛成",
+      "顔",
+      "首を振る",
+      "首を横に振る",
+      "head",
+      "horizontally",
+      "no",
+      "shake",
+      "shaking"
     ],
-    "name" : "head shaking horizontally"
+    "name" : "首を横に振る"
   },
   {
     "emoji" : "🙂‍↕️",
     "englishName" : "head shaking vertically",
     "keywords" : [
-
+      "はい",
+      "頷く",
+      "顔",
+      "首を振る",
+      "首を縦に振る",
+      "head",
+      "nod",
+      "shaking",
+      "vertically",
+      "yes"
     ],
-    "name" : "head shaking vertically"
+    "name" : "首を縦に振る"
   },
   {
     "emoji" : "😌",
@@ -1383,9 +1412,17 @@
     "emoji" : "☹️",
     "englishName" : "frowning face",
     "keywords" : [
-
+      "しかめ面",
+      "困った",
+      "困った顔",
+      "悲しい",
+      "顔",
+      "face",
+      "frown",
+      "frowning",
+      "sad"
     ],
-    "name" : "frowning face"
+    "name" : "困った顔"
   },
   {
     "emoji" : "😮",
@@ -1951,9 +1988,22 @@
     "emoji" : "☠️",
     "englishName" : "skull and crossbones",
     "keywords" : [
-
+      "スカル",
+      "ドクロ",
+      "ドクロと骨",
+      "死",
+      "顔",
+      "骨",
+      "骸骨",
+      "bone",
+      "crossbones",
+      "dead",
+      "death",
+      "face",
+      "monster",
+      "skull"
     ],
-    "name" : "skull and crossbones"
+    "name" : "ドクロと骨"
   },
   {
     "emoji" : "💩",
@@ -2377,9 +2427,17 @@
     "emoji" : "❣️",
     "englishName" : "heart exclamation",
     "keywords" : [
-
+      "エクスクラメーションマーク",
+      "ハート",
+      "ハートのびっくり",
+      "びっくりマーク",
+      "exclamation",
+      "heart",
+      "heavy",
+      "mark",
+      "punctuation"
     ],
-    "name" : "heart exclamation"
+    "name" : "ハートのびっくり"
   },
   {
     "emoji" : "💔",
@@ -2407,25 +2465,55 @@
     "emoji" : "❤️‍🔥",
     "englishName" : "heart on fire",
     "keywords" : [
-
+      "ハート",
+      "愛",
+      "火の付いた",
+      "炎",
+      "燃えるハート",
+      "聖なる心臓",
+      "burn",
+      "fire",
+      "heart",
+      "love",
+      "lust",
+      "sacred"
     ],
-    "name" : "heart on fire"
+    "name" : "燃えるハート"
   },
   {
     "emoji" : "❤️‍🩹",
     "englishName" : "mending heart",
     "keywords" : [
-
+      "ケガ",
+      "ハート",
+      "傷ついた",
+      "傷心",
+      "包帯",
+      "包帯を巻いたハート",
+      "healthier",
+      "heart",
+      "improving",
+      "mending",
+      "recovering",
+      "recuperating",
+      "well"
     ],
-    "name" : "mending heart"
+    "name" : "包帯を巻いたハート"
   },
   {
     "emoji" : "❤️",
     "englishName" : "red heart",
     "keywords" : [
-
+      "ハート",
+      "愛",
+      "赤",
+      "赤いハート",
+      "emotion",
+      "heart",
+      "love",
+      "red"
     ],
-    "name" : "red heart"
+    "name" : "赤いハート"
   },
   {
     "emoji" : "🩷",
@@ -2817,9 +2905,17 @@
     "emoji" : "🗯️",
     "englishName" : "right anger bubble",
     "keywords" : [
-
+      "吹き出し",
+      "怒り",
+      "怒りの吹き出し",
+      "anger",
+      "angry",
+      "balloon",
+      "bubble",
+      "mad",
+      "right"
     ],
-    "name" : "right anger bubble"
+    "name" : "怒りの吹き出し"
   },
   {
     "emoji" : "💭",
@@ -2919,9 +3015,19 @@
     "emoji" : "🖐️",
     "englishName" : "hand with fingers splayed",
     "keywords" : [
-
+      "ストップ",
+      "パー",
+      "手",
+      "挙手",
+      "開いた手",
+      "finger",
+      "fingers",
+      "hand",
+      "raised",
+      "splayed",
+      "stop"
     ],
-    "name" : "hand with fingers splayed"
+    "name" : "開いた手"
   },
   {
     "emoji" : "✋",
@@ -3057,9 +3163,17 @@
     "emoji" : "✌️",
     "englishName" : "victory hand",
     "keywords" : [
-
+      "Vサイン",
+      "チョキ",
+      "ピース",
+      "手",
+      "指",
+      "hand",
+      "peace",
+      "v",
+      "victory"
     ],
-    "name" : "victory hand"
+    "name" : "Vサイン"
   },
   {
     "emoji" : "🫰",
@@ -3217,9 +3331,19 @@
     "emoji" : "☝️",
     "englishName" : "index pointing up",
     "keywords" : [
-
+      "上",
+      "上指差し",
+      "手",
+      "指差し",
+      "finger",
+      "hand",
+      "index",
+      "point",
+      "pointing",
+      "this",
+      "up"
     ],
-    "name" : "index pointing up"
+    "name" : "上指差し"
   },
   {
     "emoji" : "🫵",
@@ -3510,9 +3634,15 @@
     "emoji" : "✍️",
     "englishName" : "writing hand",
     "keywords" : [
-
+      "手",
+      "手で書く",
+      "手書き",
+      "書いている手",
+      "hand",
+      "write",
+      "writing"
     ],
-    "name" : "writing hand"
+    "name" : "書いている手"
   },
   {
     "emoji" : "💅",
@@ -3725,9 +3855,16 @@
     "emoji" : "👁️",
     "englishName" : "eye",
     "keywords" : [
-
+      "からだ",
+      "一つ目",
+      "片目",
+      "目",
+      "1",
+      "body",
+      "eye",
+      "one"
     ],
-    "name" : "eye"
+    "name" : "片目"
   },
   {
     "emoji" : "👶",
@@ -3842,25 +3979,49 @@
     "emoji" : "👨‍🦰",
     "englishName" : "man: red hair",
     "keywords" : [
-
+      "大人",
+      "男",
+      "男性",
+      "赤毛",
+      "顔",
+      "adult",
+      "bro",
+      "man",
+      "red hair"
     ],
-    "name" : "man: red hair"
+    "name" : "男性: 赤毛"
   },
   {
     "emoji" : "👨‍🦳",
     "englishName" : "man: white hair",
     "keywords" : [
-
+      "大人",
+      "男",
+      "男性",
+      "白髪",
+      "顔",
+      "adult",
+      "bro",
+      "man",
+      "white hair"
     ],
-    "name" : "man: white hair"
+    "name" : "男性: 白髪"
   },
   {
     "emoji" : "👨‍🦲",
     "englishName" : "man: bald",
     "keywords" : [
-
+      "はげ頭",
+      "大人",
+      "男",
+      "男性",
+      "顔",
+      "adult",
+      "bald",
+      "bro",
+      "man"
     ],
-    "name" : "man: bald"
+    "name" : "男性: はげ頭"
   },
   {
     "emoji" : "👩",
@@ -3880,17 +4041,33 @@
     "emoji" : "🧑‍🦰",
     "englishName" : "person: red hair",
     "keywords" : [
-
+      "中性的",
+      "大人",
+      "成人",
+      "赤毛",
+      "顔",
+      "adult",
+      "person",
+      "red hair"
     ],
-    "name" : "person: red hair"
+    "name" : "大人: 赤毛"
   },
   {
     "emoji" : "👱‍♀️",
     "englishName" : "woman: blond hair",
     "keywords" : [
-
+      "ブロンド",
+      "女",
+      "女性",
+      "金髪",
+      "金髪の女性",
+      "blond",
+      "blond-haired",
+      "blonde",
+      "hair",
+      "woman"
     ],
-    "name" : "woman: blond hair"
+    "name" : "金髪の女性"
   },
   {
     "emoji" : "👴",
@@ -3967,9 +4144,21 @@
     "emoji" : "🙅‍♀️",
     "englishName" : "woman gesturing NO",
     "keywords" : [
-
+      "NG",
+      "ジェスチャー",
+      "ダメのポーズをする女",
+      "バツ",
+      "女",
+      "女性",
+      "forbidden",
+      "gesture",
+      "hand",
+      "NO",
+      "not",
+      "prohibit",
+      "woman"
     ],
-    "name" : "woman gesturing NO"
+    "name" : "ダメのポーズをする女"
   },
   {
     "emoji" : "🙆",
@@ -3997,97 +4186,301 @@
     "emoji" : "🙆‍♀️",
     "englishName" : "woman gesturing OK",
     "keywords" : [
-
+      "OKのポーズをする女",
+      "オーケー",
+      "オッケー",
+      "ジェスチャー",
+      "丸",
+      "女性",
+      "exercise",
+      "gesture",
+      "gesturing",
+      "hand",
+      "OK",
+      "omg",
+      "woman"
     ],
-    "name" : "woman gesturing OK"
+    "name" : "OKのポーズをする女"
   },
   {
     "emoji" : "💁‍♂️",
     "englishName" : "man tipping hand",
     "keywords" : [
-
+      "ジェスチャー",
+      "案内",
+      "案内する男",
+      "男",
+      "男性",
+      "fetch",
+      "flick",
+      "flip",
+      "gossip",
+      "hand",
+      "man",
+      "sarcasm",
+      "sarcastic",
+      "sassy",
+      "seriously",
+      "tipping",
+      "whatever"
     ],
-    "name" : "man tipping hand"
+    "name" : "案内する男"
   },
   {
     "emoji" : "💁‍♀️",
     "englishName" : "woman tipping hand",
     "keywords" : [
-
+      "ジェスチャー",
+      "女",
+      "女性",
+      "案内",
+      "案内する女",
+      "fetch",
+      "flick",
+      "flip",
+      "gossip",
+      "hand",
+      "sarcasm",
+      "sarcastic",
+      "sassy",
+      "seriously",
+      "tipping",
+      "whatever",
+      "woman"
     ],
-    "name" : "woman tipping hand"
+    "name" : "案内する女"
   },
   {
     "emoji" : "🙋‍♂️",
     "englishName" : "man raising hand",
     "keywords" : [
-
+      "手を挙げる",
+      "手を挙げる男",
+      "挙手",
+      "男",
+      "男性",
+      "gesture",
+      "hand",
+      "here",
+      "know",
+      "man",
+      "me",
+      "pick",
+      "question",
+      "raise",
+      "raising"
     ],
-    "name" : "man raising hand"
+    "name" : "手を挙げる男"
   },
   {
     "emoji" : "🙋‍♀️",
     "englishName" : "woman raising hand",
     "keywords" : [
-
+      "女",
+      "女性",
+      "手を挙げる",
+      "手を挙げる女",
+      "挙手",
+      "gesture",
+      "hand",
+      "here",
+      "know",
+      "me",
+      "pick",
+      "question",
+      "raise",
+      "raising",
+      "woman"
     ],
-    "name" : "woman raising hand"
+    "name" : "手を挙げる女"
   },
   {
     "emoji" : "🙇‍♂️",
     "englishName" : "man bowing",
     "keywords" : [
-
+      "おじぎ",
+      "おじぎする男",
+      "ごめんなさい",
+      "土下座",
+      "男",
+      "男性",
+      "apology",
+      "ask",
+      "beg",
+      "bow",
+      "bowing",
+      "favor",
+      "forgive",
+      "gesture",
+      "man",
+      "meditate",
+      "meditation",
+      "pity",
+      "regret",
+      "sorry"
     ],
-    "name" : "man bowing"
+    "name" : "おじぎする男"
   },
   {
     "emoji" : "🙇‍♀️",
     "englishName" : "woman bowing",
     "keywords" : [
-
+      "おじぎ",
+      "おじぎする女",
+      "ごめんなさい",
+      "土下座",
+      "女",
+      "女性",
+      "apology",
+      "ask",
+      "beg",
+      "bow",
+      "bowing",
+      "favor",
+      "forgive",
+      "gesture",
+      "meditate",
+      "meditation",
+      "pity",
+      "regret",
+      "sorry",
+      "woman"
     ],
-    "name" : "woman bowing"
+    "name" : "おじぎする女"
   },
   {
     "emoji" : "🤦‍♂️",
     "englishName" : "man facepalming",
     "keywords" : [
-
+      "あちゃー",
+      "うそでしょ",
+      "ジェスチャー",
+      "ショック",
+      "ひたいに手",
+      "ひたいに手をあてる男",
+      "またか",
+      "信じられない",
+      "男",
+      "男性",
+      "again",
+      "bewilder",
+      "disbelief",
+      "exasperation",
+      "facepalm",
+      "man",
+      "no",
+      "not",
+      "oh",
+      "omg",
+      "shock",
+      "smh"
     ],
-    "name" : "man facepalming"
+    "name" : "ひたいに手をあてる男"
   },
   {
     "emoji" : "🤦‍♀️",
     "englishName" : "woman facepalming",
     "keywords" : [
-
+      "あちゃー",
+      "うそでしょ",
+      "ジェスチャー",
+      "ショック",
+      "ひたいに手",
+      "ひたいに手をあてる女",
+      "またか",
+      "信じられない",
+      "女",
+      "女性",
+      "again",
+      "bewilder",
+      "disbelief",
+      "exasperation",
+      "facepalm",
+      "no",
+      "not",
+      "oh",
+      "omg",
+      "shock",
+      "smh",
+      "woman"
     ],
-    "name" : "woman facepalming"
+    "name" : "ひたいに手をあてる女"
   },
   {
     "emoji" : "🤷‍♂️",
     "englishName" : "man shrugging",
     "keywords" : [
-
+      "お手上げ",
+      "お手上げする男",
+      "さあね",
+      "ジェスチャー",
+      "わかりません",
+      "多分ね",
+      "男",
+      "男性",
+      "知らない",
+      "肩をすくめる",
+      "doubt",
+      "dunno",
+      "guess",
+      "idk",
+      "ignorance",
+      "indifference",
+      "knows",
+      "man",
+      "maybe",
+      "shrug",
+      "shrugging",
+      "whatever",
+      "who"
     ],
-    "name" : "man shrugging"
+    "name" : "お手上げする男"
   },
   {
     "emoji" : "🤷‍♀️",
     "englishName" : "woman shrugging",
     "keywords" : [
-
+      "お手上げ",
+      "お手上げする女",
+      "さあね",
+      "ジェスチャー",
+      "わかりません",
+      "多分ね",
+      "女",
+      "女性",
+      "知らない",
+      "肩をすくめる",
+      "doubt",
+      "dunno",
+      "guess",
+      "idk",
+      "ignorance",
+      "indifference",
+      "knows",
+      "maybe",
+      "shrug",
+      "shrugging",
+      "whatever",
+      "who",
+      "woman"
     ],
-    "name" : "woman shrugging"
+    "name" : "お手上げする女"
   },
   {
     "emoji" : "🧑‍⚕️",
     "englishName" : "health worker",
     "keywords" : [
-
+      "セラピスト",
+      "医師",
+      "医者",
+      "doctor",
+      "health",
+      "healthcare",
+      "nurse",
+      "therapist",
+      "worker"
     ],
-    "name" : "health worker"
+    "name" : "医者"
   },
   {
     "emoji" : "🧑‍🎓",
@@ -4121,9 +4514,14 @@
     "emoji" : "🧑‍⚖️",
     "englishName" : "judge",
     "keywords" : [
-
+      "裁判",
+      "裁判官",
+      "judge",
+      "justice",
+      "law",
+      "scales"
     ],
-    "name" : "judge"
+    "name" : "裁判官"
   },
   {
     "emoji" : "🧑‍🌾",
@@ -4257,9 +4655,15 @@
     "emoji" : "🕵️",
     "englishName" : "detective",
     "keywords" : [
-
+      "スパイ",
+      "探偵",
+      "私立探偵",
+      "虫めがね",
+      "detective",
+      "sleuth",
+      "spy"
     ],
-    "name" : "detective"
+    "name" : "探偵"
   },
   {
     "emoji" : "🥷",
@@ -4399,25 +4803,63 @@
     "emoji" : "🧚‍♀️",
     "englishName" : "woman fairy",
     "keywords" : [
-
+      "女",
+      "女の妖精",
+      "女性",
+      "妖精",
+      "fairy",
+      "fairytale",
+      "fantasy",
+      "myth",
+      "person",
+      "pixie",
+      "tale",
+      "Titania",
+      "wings",
+      "woman"
     ],
-    "name" : "woman fairy"
+    "name" : "女の妖精"
   },
   {
     "emoji" : "🧜‍♀️",
     "englishName" : "mermaid",
     "keywords" : [
-
+      "マーメイド",
+      "人魚",
+      "女",
+      "女性",
+      "creature",
+      "fairytale",
+      "folklore",
+      "mermaid",
+      "merwoman",
+      "ocean",
+      "sea",
+      "siren",
+      "trident"
     ],
-    "name" : "mermaid"
+    "name" : "マーメイド"
   },
   {
     "emoji" : "🧞‍♂️",
     "englishName" : "man genie",
     "keywords" : [
-
+      "男",
+      "男の精霊",
+      "男性",
+      "精霊",
+      "魔神",
+      "djinn",
+      "fantasy",
+      "genie",
+      "jinn",
+      "lamp",
+      "man",
+      "myth",
+      "rub",
+      "wishes"
     ],
-    "name" : "man genie"
+    "name" : "男の精霊"
   },
   {
     "emoji" : "🧟",
@@ -4678,17 +5120,37 @@
     "emoji" : "🏇🏿",
     "englishName" : "horse racing: dark skin tone",
     "keywords" : [
-
+      "ジョッキー",
+      "スポーツ",
+      "乗馬",
+      "濃い肌色",
+      "競走馬",
+      "競馬",
+      "馬",
+      "騎手",
+      "dark skin tone",
+      "horse",
+      "jockey",
+      "racehorse",
+      "racing",
+      "riding",
+      "sport"
     ],
-    "name" : "horse racing: dark skin tone"
+    "name" : "競馬: 濃い肌色"
   },
   {
     "emoji" : "⛷️",
     "englishName" : "skier",
     "keywords" : [
-
+      "スキー",
+      "スキーヤー",
+      "ストック",
+      "スポーツ",
+      "ski",
+      "skier",
+      "snow"
     ],
-    "name" : "skier"
+    "name" : "スキーヤー"
   },
   {
     "emoji" : "🏂",
@@ -4733,9 +5195,28 @@
     "emoji" : "🏋️",
     "englishName" : "person lifting weights",
     "keywords" : [
-
+      "ウェイトリフティング",
+      "スポーツ",
+      "デッドリフト",
+      "バーベル",
+      "パワーリフティング",
+      "ボディビルダー",
+      "筋トレ",
+      "運動",
+      "重量挙げ",
+      "barbell",
+      "bodybuilder",
+      "deadlift",
+      "lifter",
+      "lifting",
+      "person",
+      "powerlifting",
+      "weight",
+      "weightlifter",
+      "weights",
+      "workout"
     ],
-    "name" : "person lifting weights"
+    "name" : "重量挙げをする人"
   },
   {
     "emoji" : "🛀",
@@ -4810,209 +5291,437 @@
     "emoji" : "👨‍👩‍👦",
     "englishName" : "family: man, woman, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man",
+      "woman"
     ],
-    "name" : "family: man, woman, boy"
+    "name" : "家族: 男性 女性 男の子"
   },
   {
     "emoji" : "👨‍👩‍👧",
     "englishName" : "family: man, woman, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man",
+      "woman"
     ],
-    "name" : "family: man, woman, girl"
+    "name" : "家族: 男性 女性 女の子"
   },
   {
     "emoji" : "👨‍👩‍👧‍👦",
     "englishName" : "family: man, woman, girl, boy",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "girl",
+      "man",
+      "woman"
     ],
-    "name" : "family: man, woman, girl, boy"
+    "name" : "家族: 男性 女性 女の子 男の子"
   },
   {
     "emoji" : "👨‍👩‍👦‍👦",
     "englishName" : "family: man, woman, boy, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man",
+      "woman"
     ],
-    "name" : "family: man, woman, boy, boy"
+    "name" : "家族: 男性 女性 男の子 男の子"
   },
   {
     "emoji" : "👨‍👩‍👧‍👧",
     "englishName" : "family: man, woman, girl, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man",
+      "woman"
     ],
-    "name" : "family: man, woman, girl, girl"
+    "name" : "家族: 男性 女性 女の子 女の子"
   },
   {
     "emoji" : "👨‍👨‍👦",
     "englishName" : "family: man, man, boy",
     "keywords" : [
-
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man"
     ],
-    "name" : "family: man, man, boy"
+    "name" : "家族: 男性 男性 男の子"
   },
   {
     "emoji" : "👨‍👨‍👧",
     "englishName" : "family: man, man, girl",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, man, girl"
+    "name" : "家族: 男性 男性 女の子"
   },
   {
     "emoji" : "👨‍👨‍👧‍👦",
     "englishName" : "family: man, man, girl, boy",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, man, girl, boy"
+    "name" : "家族: 男性 男性 女の子 男の子"
   },
   {
     "emoji" : "👨‍👨‍👦‍👦",
     "englishName" : "family: man, man, boy, boy",
     "keywords" : [
-
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man"
     ],
-    "name" : "family: man, man, boy, boy"
+    "name" : "家族: 男性 男性 男の子 男の子"
   },
   {
     "emoji" : "👨‍👨‍👧‍👧",
     "englishName" : "family: man, man, girl, girl",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, man, girl, girl"
+    "name" : "家族: 男性 男性 女の子 女の子"
   },
   {
     "emoji" : "👩‍👩‍👦",
     "englishName" : "family: woman, woman, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "woman"
     ],
-    "name" : "family: woman, woman, boy"
+    "name" : "家族: 女性 女性 男の子"
   },
   {
     "emoji" : "👩‍👩‍👧",
     "englishName" : "family: woman, woman, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, woman, girl"
+    "name" : "家族: 女性 女性 女の子"
   },
   {
     "emoji" : "👩‍👩‍👧‍👦",
     "englishName" : "family: woman, woman, girl, boy",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, woman, girl, boy"
+    "name" : "家族: 女性 女性 女の子 男の子"
   },
   {
     "emoji" : "👩‍👩‍👦‍👦",
     "englishName" : "family: woman, woman, boy, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "woman"
     ],
-    "name" : "family: woman, woman, boy, boy"
+    "name" : "家族: 女性 女性 男の子 男の子"
   },
   {
     "emoji" : "👩‍👩‍👧‍👧",
     "englishName" : "family: woman, woman, girl, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, woman, girl, girl"
+    "name" : "家族: 女性 女性 女の子 女の子"
   },
   {
     "emoji" : "👨‍👦",
     "englishName" : "family: man, boy",
     "keywords" : [
-
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man"
     ],
-    "name" : "family: man, boy"
+    "name" : "家族: 男性 男の子"
   },
   {
     "emoji" : "👨‍👦‍👦",
     "englishName" : "family: man, boy, boy",
     "keywords" : [
-
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "man"
     ],
-    "name" : "family: man, boy, boy"
+    "name" : "家族: 男性 男の子 男の子"
   },
   {
     "emoji" : "👨‍👧",
     "englishName" : "family: man, girl",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, girl"
+    "name" : "家族: 男性 女の子"
   },
   {
     "emoji" : "👨‍👧‍👦",
     "englishName" : "family: man, girl, boy",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男の子",
+      "男性",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, girl, boy"
+    "name" : "家族: 男性 女の子 男の子"
   },
   {
     "emoji" : "👨‍👧‍👧",
     "englishName" : "family: man, girl, girl",
     "keywords" : [
-
+      "女の子",
+      "子供",
+      "家族",
+      "男性",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "man"
     ],
-    "name" : "family: man, girl, girl"
+    "name" : "家族: 男性 女の子 女の子"
   },
   {
     "emoji" : "👩‍👦",
     "englishName" : "family: woman, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "woman"
     ],
-    "name" : "family: woman, boy"
+    "name" : "家族: 女性 男の子"
   },
   {
     "emoji" : "👩‍👦‍👦",
     "englishName" : "family: woman, boy, boy",
     "keywords" : [
-
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "woman"
     ],
-    "name" : "family: woman, boy, boy"
+    "name" : "家族: 女性 男の子 男の子"
   },
   {
     "emoji" : "👩‍👧",
     "englishName" : "family: woman, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, girl"
+    "name" : "家族: 女性 女の子"
   },
   {
     "emoji" : "👩‍👧‍👦",
     "englishName" : "family: woman, girl, boy",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "男の子",
+      "親子",
+      "boy",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, girl, boy"
+    "name" : "家族: 女性 女の子 男の子"
   },
   {
     "emoji" : "👩‍👧‍👧",
     "englishName" : "family: woman, girl, girl",
     "keywords" : [
-
+      "女の子",
+      "女性",
+      "子供",
+      "家族",
+      "親子",
+      "child",
+      "family",
+      "girl",
+      "woman"
     ],
-    "name" : "family: woman, girl, girl"
+    "name" : "家族: 女性 女の子 女の子"
   },
   {
     "emoji" : "🗣️",
     "englishName" : "speaking head",
     "keywords" : [
-
+      "シルエット",
+      "話す",
+      "話す人のシルエット",
+      "顔",
+      "face",
+      "head",
+      "silhouette",
+      "speak",
+      "speaking"
     ],
-    "name" : "speaking head"
+    "name" : "話す人のシルエット"
   },
   {
     "emoji" : "👤",
@@ -5770,9 +6479,19 @@
     "emoji" : "🐻‍❄️",
     "englishName" : "polar bear",
     "keywords" : [
-
+      "クマ",
+      "シロクマ",
+      "ホッキョクグマ",
+      "動物",
+      "北極",
+      "白",
+      "animal",
+      "arctic",
+      "bear",
+      "polar",
+      "white"
     ],
-    "name" : "polar bear"
+    "name" : "シロクマ"
   },
   {
     "emoji" : "🐨",
@@ -5976,9 +6695,18 @@
     "emoji" : "🕊️",
     "englishName" : "dove",
     "keywords" : [
-
+      "ハト",
+      "動物",
+      "平和",
+      "鳥",
+      "鳩",
+      "bird",
+      "dove",
+      "fly",
+      "ornithology",
+      "peace"
     ],
-    "name" : "dove"
+    "name" : "ハト"
   },
   {
     "emoji" : "🦅",
@@ -6578,17 +7306,27 @@
     "emoji" : "🕷️",
     "englishName" : "spider",
     "keywords" : [
-
+      "クモ",
+      "スパイダー",
+      "虫",
+      "animal",
+      "insect",
+      "spider"
     ],
-    "name" : "spider"
+    "name" : "クモ"
   },
   {
     "emoji" : "🕸️",
     "englishName" : "spider web",
     "keywords" : [
-
+      "ウェブ",
+      "クモ",
+      "クモの巣",
+      "スパイダー",
+      "spider",
+      "web"
     ],
-    "name" : "spider web"
+    "name" : "クモの巣"
   },
   {
     "emoji" : "🦟",
@@ -6928,9 +7666,15 @@
     "emoji" : "☘️",
     "englishName" : "shamrock",
     "keywords" : [
-
+      "クローバー",
+      "植物",
+      "草",
+      "葉",
+      "irish",
+      "plant",
+      "shamrock"
     ],
-    "name" : "shamrock"
+    "name" : "クローバー"
   },
   {
     "emoji" : "🍀",
@@ -7408,9 +8152,14 @@
     "emoji" : "🌶️",
     "englishName" : "hot pepper",
     "keywords" : [
-
+      "とうがらし",
+      "辛い",
+      "野菜",
+      "香辛料",
+      "hot",
+      "pepper"
     ],
-    "name" : "hot pepper"
+    "name" : "とうがらし"
   },
   {
     "emoji" : "🫑",
@@ -8948,9 +9697,21 @@
     "emoji" : "🍽️",
     "englishName" : "fork and knife with plate",
     "keywords" : [
-
+      "お皿",
+      "ディナー",
+      "ナイフ",
+      "ナイフとフォークと皿",
+      "フォーク",
+      "皿",
+      "食器",
+      "cooking",
+      "dinner",
+      "eat",
+      "fork",
+      "knife",
+      "plate"
     ],
-    "name" : "fork and knife with plate"
+    "name" : "ナイフとフォークと皿"
   },
   {
     "emoji" : "🍴",
@@ -9058,9 +9819,14 @@
     "emoji" : "🗺️",
     "englishName" : "world map",
     "keywords" : [
-
+      "マップ",
+      "世界",
+      "世界地図",
+      "地図",
+      "map",
+      "world"
     ],
-    "name" : "world map"
+    "name" : "世界地図"
   },
   {
     "emoji" : "🗾",
@@ -9097,9 +9863,16 @@
     "emoji" : "🏔️",
     "englishName" : "snow-capped mountain",
     "keywords" : [
-
+      "冠雪",
+      "山",
+      "雪",
+      "雪山",
+      "cold",
+      "mountain",
+      "snow",
+      "snow-capped"
     ],
-    "name" : "snow-capped mountain"
+    "name" : "雪山"
   },
   {
     "emoji" : "🗻",
@@ -9118,25 +9891,39 @@
     "emoji" : "🏕️",
     "englishName" : "camping",
     "keywords" : [
-
+      "キャンプ",
+      "テント",
+      "山",
+      "camping"
     ],
-    "name" : "camping"
+    "name" : "キャンプ"
   },
   {
     "emoji" : "🏖️",
     "englishName" : "beach with umbrella",
     "keywords" : [
-
+      "パラソル",
+      "ビーチ",
+      "ビーチパラソル",
+      "砂浜",
+      "beach",
+      "umbrella"
     ],
-    "name" : "beach with umbrella"
+    "name" : "ビーチパラソル"
   },
   {
     "emoji" : "🏛️",
     "englishName" : "classical building",
     "keywords" : [
-
+      "古代",
+      "史跡",
+      "歴史",
+      "歴史的な建物",
+      "歴史的建造物",
+      "building",
+      "classical"
     ],
-    "name" : "classical building"
+    "name" : "歴史的な建物"
   },
   {
     "emoji" : "🏠",
@@ -9369,9 +10156,16 @@
     "emoji" : "⛩️",
     "englishName" : "shinto shrine",
     "keywords" : [
-
+      "宗教",
+      "建物",
+      "神社",
+      "神道",
+      "鳥居",
+      "religion",
+      "shinto",
+      "shrine"
     ],
-    "name" : "shinto shrine"
+    "name" : "鳥居"
   },
   {
     "emoji" : "⛲",
@@ -9401,9 +10195,14 @@
     "emoji" : "🏙️",
     "englishName" : "cityscape",
     "keywords" : [
-
+      "ビル群",
+      "都会",
+      "都市",
+      "高層ビル",
+      "city",
+      "cityscape"
     ],
-    "name" : "cityscape"
+    "name" : "高層ビル"
   },
   {
     "emoji" : "🌄",
@@ -9466,9 +10265,15 @@
     "emoji" : "♨️",
     "englishName" : "hot springs",
     "keywords" : [
-
+      "温泉",
+      "温泉マーク",
+      "湯気",
+      "hot",
+      "hotsprings",
+      "springs",
+      "steaming"
     ],
-    "name" : "hot springs"
+    "name" : "温泉マーク"
   },
   {
     "emoji" : "🎠",
@@ -9712,9 +10517,19 @@
     "emoji" : "🏎️",
     "englishName" : "racing car",
     "keywords" : [
-
+      "F1",
+      "カーレース",
+      "スポーツ",
+      "モータースポーツ",
+      "レーシングカー",
+      "レース",
+      "乗り物",
+      "車",
+      "car",
+      "racing",
+      "zoom"
     ],
-    "name" : "racing car"
+    "name" : "レーシングカー"
   },
   {
     "emoji" : "🛵",
@@ -9889,17 +10704,33 @@
     "emoji" : "🛳️",
     "englishName" : "passenger ship",
     "keywords" : [
-
+      "乗り物",
+      "客船",
+      "旅客船",
+      "船",
+      "passenger",
+      "ship"
     ],
-    "name" : "passenger ship"
+    "name" : "客船"
   },
   {
     "emoji" : "✈️",
     "englishName" : "airplane",
     "keywords" : [
-
+      "ジェット機",
+      "乗り物",
+      "旅行",
+      "航空機",
+      "飛行機",
+      "aeroplane",
+      "airplane",
+      "fly",
+      "flying",
+      "jet",
+      "plane",
+      "travel"
     ],
-    "name" : "airplane"
+    "name" : "飛行機"
   },
   {
     "emoji" : "🚀",
@@ -9940,9 +10771,14 @@
     "emoji" : "🛎️",
     "englishName" : "bellhop bell",
     "keywords" : [
-
+      "ベル",
+      "ベルボーイベル",
+      "ホテル",
+      "bell",
+      "bellhop",
+      "hotel"
     ],
-    "name" : "bellhop bell"
+    "name" : "ベルボーイベル"
   },
   {
     "emoji" : "⌛",
@@ -10005,9 +10841,14 @@
     "emoji" : "⏱️",
     "englishName" : "stopwatch",
     "keywords" : [
-
+      "ストップウォッチ",
+      "タイム",
+      "時計",
+      "clock",
+      "stopwatch",
+      "time"
     ],
-    "name" : "stopwatch"
+    "name" : "ストップウォッチ"
   },
   {
     "emoji" : "🕛",
@@ -10593,17 +11434,32 @@
     "emoji" : "🌡️",
     "englishName" : "thermometer",
     "keywords" : [
-
+      "天気",
+      "寒暖計",
+      "気温",
+      "温度",
+      "温度計",
+      "thermometer",
+      "weather"
     ],
-    "name" : "thermometer"
+    "name" : "温度計"
   },
   {
     "emoji" : "☀️",
     "englishName" : "sun",
     "keywords" : [
-
+      "天気",
+      "太陽",
+      "日光",
+      "晴れ",
+      "bright",
+      "rays",
+      "space",
+      "sun",
+      "sunny",
+      "weather"
     ],
-    "name" : "sun"
+    "name" : "太陽"
   },
   {
     "emoji" : "🌝",
@@ -10697,9 +11553,13 @@
     "emoji" : "☁️",
     "englishName" : "cloud",
     "keywords" : [
-
+      "天気",
+      "曇り",
+      "雲",
+      "cloud",
+      "weather"
     ],
-    "name" : "cloud"
+    "name" : "雲"
   },
   {
     "emoji" : "⛅",
@@ -10722,65 +11582,129 @@
     "emoji" : "⛈️",
     "englishName" : "cloud with lightning and rain",
     "keywords" : [
-
+      "天気",
+      "稲妻",
+      "雨",
+      "雲",
+      "雷",
+      "雷雨",
+      "雷雲",
+      "cloud",
+      "lightning",
+      "rain",
+      "thunder",
+      "thunderstorm"
     ],
-    "name" : "cloud with lightning and rain"
+    "name" : "雷雨"
   },
   {
     "emoji" : "🌤️",
     "englishName" : "sun behind small cloud",
     "keywords" : [
-
+      "天気",
+      "太陽",
+      "晴れ",
+      "晴れ時々曇り",
+      "雲",
+      "behind",
+      "cloud",
+      "sun",
+      "weather"
     ],
-    "name" : "sun behind small cloud"
+    "name" : "晴れ時々曇り"
   },
   {
     "emoji" : "🌥️",
     "englishName" : "sun behind large cloud",
     "keywords" : [
-
+      "天気",
+      "太陽",
+      "曇り",
+      "曇り一時晴れ",
+      "雲",
+      "behind",
+      "cloud",
+      "sun",
+      "weather"
     ],
-    "name" : "sun behind large cloud"
+    "name" : "曇り一時晴れ"
   },
   {
     "emoji" : "🌦️",
     "englishName" : "sun behind rain cloud",
     "keywords" : [
-
+      "天気",
+      "天気雨",
+      "太陽",
+      "曇り",
+      "雨時々晴れ",
+      "雲",
+      "behind",
+      "cloud",
+      "rain",
+      "sun",
+      "weather"
     ],
-    "name" : "sun behind rain cloud"
+    "name" : "雨時々晴れ"
   },
   {
     "emoji" : "🌧️",
     "englishName" : "cloud with rain",
     "keywords" : [
-
+      "天気",
+      "雨",
+      "雨雲",
+      "雲",
+      "cloud",
+      "rain",
+      "weather"
     ],
-    "name" : "cloud with rain"
+    "name" : "雨雲"
   },
   {
     "emoji" : "🌨️",
     "englishName" : "cloud with snow",
     "keywords" : [
-
+      "天気",
+      "雪",
+      "雪雲",
+      "雲",
+      "cloud",
+      "cold",
+      "snow",
+      "weather"
     ],
-    "name" : "cloud with snow"
+    "name" : "雪雲"
   },
   {
     "emoji" : "🌩️",
     "englishName" : "cloud with lightning",
     "keywords" : [
-
+      "天気",
+      "稲妻",
+      "雲",
+      "雷",
+      "雷雲",
+      "cloud",
+      "lightning",
+      "weather"
     ],
-    "name" : "cloud with lightning"
+    "name" : "雷雲"
   },
   {
     "emoji" : "🌪️",
     "englishName" : "tornado",
     "keywords" : [
-
+      "トルネード",
+      "天気",
+      "突風",
+      "竜巻",
+      "cloud",
+      "tornado",
+      "weather",
+      "whirlwind"
     ],
-    "name" : "tornado"
+    "name" : "竜巻"
   },
   {
     "emoji" : "🌀",
@@ -10839,17 +11763,32 @@
     "emoji" : "☂️",
     "englishName" : "umbrella",
     "keywords" : [
-
+      "傘",
+      "天気",
+      "持ち物",
+      "雨",
+      "clothing",
+      "rain",
+      "umbrella"
     ],
-    "name" : "umbrella"
+    "name" : "傘"
   },
   {
     "emoji" : "⛱️",
     "englishName" : "umbrella on ground",
     "keywords" : [
-
+      "パラソル",
+      "ビーチ",
+      "傘",
+      "日傘",
+      "砂浜",
+      "雨",
+      "ground",
+      "rain",
+      "sun",
+      "umbrella"
     ],
-    "name" : "umbrella on ground"
+    "name" : "パラソル"
   },
   {
     "emoji" : "⚡",
@@ -10877,9 +11816,16 @@
     "emoji" : "❄️",
     "englishName" : "snowflake",
     "keywords" : [
-
+      "天気",
+      "結晶",
+      "雪",
+      "雪の結晶",
+      "cold",
+      "snow",
+      "snowflake",
+      "weather"
     ],
-    "name" : "snowflake"
+    "name" : "雪の結晶"
   },
   {
     "emoji" : "⛄",
@@ -11248,9 +12194,15 @@
     "emoji" : "🎟️",
     "englishName" : "admission tickets",
     "keywords" : [
-
+      "チケット",
+      "入場パス",
+      "入場券",
+      "半券",
+      "admission",
+      "ticket",
+      "tickets"
     ],
-    "name" : "admission tickets"
+    "name" : "入場券"
   },
   {
     "emoji" : "🏆",
@@ -11540,9 +12492,15 @@
     "emoji" : "⛸️",
     "englishName" : "ice skate",
     "keywords" : [
-
+      "アイススケート",
+      "スケート",
+      "スポーツ",
+      "フィギュアスケート",
+      "ice",
+      "skate",
+      "skating"
     ],
-    "name" : "ice skate"
+    "name" : "アイススケート"
   },
   {
     "emoji" : "🎣",
@@ -11712,17 +12670,31 @@
     "emoji" : "♠️",
     "englishName" : "spade suit",
     "keywords" : [
-
+      "カード",
+      "スペード",
+      "トランプ",
+      "card",
+      "game",
+      "spade",
+      "suit"
     ],
-    "name" : "spade suit"
+    "name" : "スペード"
   },
   {
     "emoji" : "♣️",
     "englishName" : "club suit",
     "keywords" : [
-
+      "カード",
+      "クラブ",
+      "クローバー",
+      "トランプ",
+      "card",
+      "club",
+      "clubs",
+      "game",
+      "suit"
     ],
-    "name" : "club suit"
+    "name" : "クラブ"
   },
   {
     "emoji" : "🃏",
@@ -11744,9 +12716,20 @@
     "emoji" : "🖼️",
     "englishName" : "framed picture",
     "keywords" : [
-
+      "アート",
+      "絵",
+      "絵画",
+      "美術館",
+      "芸術",
+      "額",
+      "art",
+      "frame",
+      "framed",
+      "museum",
+      "painting",
+      "picture"
     ],
-    "name" : "framed picture"
+    "name" : "絵画"
   },
   {
     "emoji" : "🎨",
@@ -11807,9 +12790,16 @@
     "emoji" : "🕶️",
     "englishName" : "sunglasses",
     "keywords" : [
-
+      "サングラス",
+      "メガネ",
+      "眼鏡",
+      "dark",
+      "eye",
+      "eyewear",
+      "glasses",
+      "sunglasses"
     ],
-    "name" : "sunglasses"
+    "name" : "サングラス"
   },
   {
     "emoji" : "👔",
@@ -12058,9 +13048,16 @@
     "emoji" : "🛍️",
     "englishName" : "shopping bags",
     "keywords" : [
-
+      "ショッピングバッグ",
+      "バッグ",
+      "紙手提げ",
+      "紙袋",
+      "bag",
+      "bags",
+      "hotel",
+      "shopping"
     ],
-    "name" : "shopping bags"
+    "name" : "紙袋"
   },
   {
     "emoji" : "🎒",
@@ -12303,9 +13300,21 @@
     "emoji" : "⛑️",
     "englishName" : "rescue worker’s helmet",
     "keywords" : [
-
+      "ヘルメット",
+      "帽子",
+      "救助隊",
+      "救急",
+      "白十字",
+      "白十字ヘルメット",
+      "aid",
+      "cross",
+      "face",
+      "hat",
+      "helmet",
+      "rescue",
+      "worker’s"
     ],
-    "name" : "rescue worker’s helmet"
+    "name" : "白十字ヘルメット"
   },
   {
     "emoji" : "💄",
@@ -12525,9 +13534,15 @@
     "emoji" : "🎙️",
     "englishName" : "studio microphone",
     "keywords" : [
-
+      "スタジオマイク",
+      "マイク",
+      "音楽",
+      "mic",
+      "microphone",
+      "music",
+      "studio"
     ],
-    "name" : "studio microphone"
+    "name" : "スタジオマイク"
   },
   {
     "emoji" : "🎤",
@@ -12829,17 +13844,30 @@
     "emoji" : "🖥️",
     "englishName" : "desktop computer",
     "keywords" : [
-
+      "PC",
+      "コンピューター",
+      "デスクトップ",
+      "デスクトップパソコン",
+      "パソコン",
+      "モニター",
+      "computer",
+      "desktop",
+      "monitor"
     ],
-    "name" : "desktop computer"
+    "name" : "デスクトップパソコン"
   },
   {
     "emoji" : "⌨️",
     "englishName" : "keyboard",
     "keywords" : [
-
+      "PC",
+      "キーボード",
+      "コンピューター",
+      "パソコン",
+      "computer",
+      "keyboard"
     ],
-    "name" : "keyboard"
+    "name" : "キーボード"
   },
   {
     "emoji" : "💽",
@@ -12930,9 +13958,18 @@
     "emoji" : "🎞️",
     "englishName" : "film frames",
     "keywords" : [
-
+      "シネマ",
+      "フィルム",
+      "フレーム",
+      "ムービー",
+      "映画",
+      "映画フィルム",
+      "cinema",
+      "film",
+      "frames",
+      "movie"
     ],
-    "name" : "film frames"
+    "name" : "映画フィルム"
   },
   {
     "emoji" : "🎬",
@@ -13008,9 +14045,14 @@
     "emoji" : "🕯️",
     "englishName" : "candle",
     "keywords" : [
-
+      "キャンドル",
+      "ろうそく",
+      "ロウソク",
+      "明かり",
+      "candle",
+      "light"
     ],
-    "name" : "candle"
+    "name" : "ろうそく"
   },
   {
     "emoji" : "💡",
@@ -13175,9 +14217,17 @@
     "emoji" : "🗞️",
     "englishName" : "rolled-up newspaper",
     "keywords" : [
-
+      "ニュース",
+      "丸めた新聞",
+      "新聞",
+      "新聞紙",
+      "news",
+      "newspaper",
+      "paper",
+      "rolled",
+      "rolled-up"
     ],
-    "name" : "rolled-up newspaper"
+    "name" : "丸めた新聞"
   },
   {
     "emoji" : "🔖",
@@ -13349,9 +14399,18 @@
     "emoji" : "✉️",
     "englishName" : "envelope",
     "keywords" : [
-
+      "Eメール",
+      "メール",
+      "封筒",
+      "手紙",
+      "郵便",
+      "電子メール",
+      "e-mail",
+      "email",
+      "envelope",
+      "letter"
     ],
-    "name" : "envelope"
+    "name" : "封筒"
   },
   {
     "emoji" : "📦",
@@ -13413,25 +14472,38 @@
     "emoji" : "🗳️",
     "englishName" : "ballot box with ballot",
     "keywords" : [
-
+      "投票",
+      "投票箱",
+      "選挙",
+      "ballot",
+      "box"
     ],
-    "name" : "ballot box with ballot"
+    "name" : "投票箱"
   },
   {
     "emoji" : "✏️",
     "englishName" : "pencil",
     "keywords" : [
-
+      "文具",
+      "文房具",
+      "鉛筆",
+      "pencil"
     ],
-    "name" : "pencil"
+    "name" : "鉛筆"
   },
   {
     "emoji" : "✒️",
     "englishName" : "black nib",
     "keywords" : [
-
+      "ペン先",
+      "万年筆",
+      "文具",
+      "文房具",
+      "black",
+      "nib",
+      "pen"
     ],
-    "name" : "black nib"
+    "name" : "ペン先"
   },
   {
     "emoji" : "🪌",
@@ -13483,9 +14555,17 @@
     "emoji" : "🗒️",
     "englishName" : "spiral notepad",
     "keywords" : [
-
+      "ノート",
+      "メモ帳",
+      "リングメモ",
+      "文具",
+      "文房具",
+      "note",
+      "notepad",
+      "pad",
+      "spiral"
     ],
-    "name" : "spiral notepad"
+    "name" : "メモ帳"
   },
   {
     "emoji" : "📊",
@@ -13589,17 +14669,35 @@
     "emoji" : "✂️",
     "englishName" : "scissors",
     "keywords" : [
-
+      "カット",
+      "はさみ",
+      "ハサミ",
+      "切る",
+      "文具",
+      "文房具",
+      "cut",
+      "cutting",
+      "paper",
+      "scissors",
+      "tool"
     ],
-    "name" : "scissors"
+    "name" : "はさみ"
   },
   {
     "emoji" : "🗑️",
     "englishName" : "wastebasket",
     "keywords" : [
-
+      "くずかご",
+      "ごみかご",
+      "ごみ箱",
+      "ゴミ箱",
+      "can",
+      "garbage",
+      "trash",
+      "waste",
+      "wastebasket"
     ],
-    "name" : "wastebasket"
+    "name" : "ごみ箱"
   },
   {
     "emoji" : "🔒",
@@ -13681,17 +14779,33 @@
     "emoji" : "🛠️",
     "englishName" : "hammer and wrench",
     "keywords" : [
-
+      "かなづち",
+      "スパナ",
+      "とんかち",
+      "ハンマーとレンチ",
+      "レンチ",
+      "工具",
+      "hammer",
+      "spanner",
+      "tool",
+      "wrench"
     ],
-    "name" : "hammer and wrench"
+    "name" : "ハンマーとレンチ"
   },
   {
     "emoji" : "⚔️",
     "englishName" : "crossed swords",
     "keywords" : [
-
+      "クロスした剣",
+      "つるぎ",
+      "刀",
+      "剣",
+      "武器",
+      "crossed",
+      "swords",
+      "weapon"
     ],
-    "name" : "crossed swords"
+    "name" : "クロスした剣"
   },
   {
     "emoji" : "💣",
@@ -13783,17 +14897,37 @@
     "emoji" : "⚙️",
     "englishName" : "gear",
     "keywords" : [
-
+      "ギア",
+      "工具",
+      "歯車",
+      "cog",
+      "cogwheel",
+      "gear",
+      "tool"
     ],
-    "name" : "gear"
+    "name" : "歯車"
   },
   {
     "emoji" : "⚖️",
     "englishName" : "balance scale",
     "keywords" : [
-
+      "はかり",
+      "バランス",
+      "化学",
+      "天秤",
+      "天秤座",
+      "実験",
+      "星座",
+      "balance",
+      "justice",
+      "Libra",
+      "scale",
+      "scales",
+      "tool",
+      "weight",
+      "zodiac"
     ],
-    "name" : "balance scale"
+    "name" : "天秤"
   },
   {
     "emoji" : "🔗",
@@ -14000,9 +15134,16 @@
     "emoji" : "🛋️",
     "englishName" : "couch and lamp",
     "keywords" : [
-
+      "ソファ",
+      "ソファとランプ",
+      "ホテル",
+      "ランプ",
+      "長椅子",
+      "couch",
+      "hotel",
+      "lamp"
     ],
-    "name" : "couch and lamp"
+    "name" : "ソファとランプ"
   },
   {
     "emoji" : "🪑",
@@ -14339,9 +15480,13 @@
     "emoji" : "⚠️",
     "englishName" : "warning",
     "keywords" : [
-
+      "標識",
+      "注意",
+      "警告",
+      "caution",
+      "warning"
     ],
-    "name" : "warning"
+    "name" : "警告"
   },
   {
     "emoji" : "⛔",
@@ -14410,17 +15555,31 @@
     "emoji" : "☢️",
     "englishName" : "radioactive",
     "keywords" : [
-
+      "危険",
+      "放射性",
+      "放射線",
+      "放射能",
+      "radioactive",
+      "sign"
     ],
-    "name" : "radioactive"
+    "name" : "放射能"
   },
   {
     "emoji" : "✝️",
     "englishName" : "latin cross",
     "keywords" : [
-
+      "キリスト教",
+      "クロス",
+      "ラテン十字",
+      "十字架",
+      "宗教",
+      "christ",
+      "Christian",
+      "cross",
+      "latin",
+      "religion"
     ],
-    "name" : "latin cross"
+    "name" : "十字架"
   },
   {
     "emoji" : "🛜",
@@ -14455,17 +15614,40 @@
     "emoji" : "‼️",
     "englishName" : "double exclamation mark",
     "keywords" : [
-
+      "!",
+      "エクスクラメーションマーク",
+      "びっくりマーク",
+      "二重感嘆符",
+      "感嘆符",
+      "約物",
+      "記号",
+      "!!",
+      "bangbang",
+      "double",
+      "exclamation",
+      "mark",
+      "punctuation"
     ],
-    "name" : "double exclamation mark"
+    "name" : "二重感嘆符"
   },
   {
     "emoji" : "⁉️",
     "englishName" : "exclamation question mark",
     "keywords" : [
-
+      "!",
+      "!?",
+      "?",
+      "はてなマーク",
+      "びっくりマーク",
+      "感嘆符疑問符",
+      "記号",
+      "exclamation",
+      "interrobang",
+      "mark",
+      "punctuation",
+      "question"
     ],
-    "name" : "exclamation question mark"
+    "name" : "感嘆符疑問符"
   },
   {
     "emoji" : "❓",
@@ -14507,17 +15689,29 @@
     "emoji" : "〰️",
     "englishName" : "wavy dash",
     "keywords" : [
-
+      "波",
+      "波線",
+      "約物",
+      "記号",
+      "dash",
+      "punctuation",
+      "wavy"
     ],
-    "name" : "wavy dash"
+    "name" : "波線"
   },
   {
     "emoji" : "♻️",
     "englishName" : "recycling symbol",
     "keywords" : [
-
+      "リサイクル",
+      "リサイクルマーク",
+      "再利用",
+      "再生",
+      "recycle",
+      "recycling",
+      "symbol"
     ],
-    "name" : "recycling symbol"
+    "name" : "リサイクルマーク"
   },
   {
     "emoji" : "📛",
@@ -14682,9 +15876,14 @@
     "emoji" : "🅿️",
     "englishName" : "P button",
     "keywords" : [
-
+      "P",
+      "Pマーク",
+      "パーキング",
+      "駐車場",
+      "button",
+      "parking"
     ],
-    "name" : "P button"
+    "name" : "Pマーク"
   },
   {
     "emoji" : "🆘",
@@ -14778,17 +15977,32 @@
     "emoji" : "㊗️",
     "englishName" : "Japanese “congratulations” button",
     "keywords" : [
-
+      "おめでとう",
+      "お祝い",
+      "祝",
+      "祝マーク",
+      "button",
+      "congratulations",
+      "ideograph",
+      "Japanese"
     ],
-    "name" : "Japanese “congratulations” button"
+    "name" : "祝マーク"
   },
   {
     "emoji" : "㊙️",
     "englishName" : "Japanese “secret” button",
     "keywords" : [
-
+      "マル秘",
+      "極秘",
+      "社外秘",
+      "秘",
+      "秘密",
+      "button",
+      "ideograph",
+      "Japanese",
+      "secret"
     ],
-    "name" : "Japanese “secret” button"
+    "name" : "マル秘"
   },
   {
     "emoji" : "🔴",
@@ -15085,16 +16299,48 @@
     "emoji" : "🏳️",
     "englishName" : "white flag",
     "keywords" : [
-
+      "フラグ",
+      "フラッグ",
+      "旗",
+      "白",
+      "白旗",
+      "flag",
+      "waving",
+      "white"
     ],
-    "name" : "white flag"
+    "name" : "白旗"
   },
   {
     "emoji" : "🏳️‍🌈",
     "englishName" : "rainbow flag",
     "keywords" : [
-
+      "GLBT",
+      "LGBT",
+      "LGBTQ",
+      "LGBTQIA",
+      "ゲイ",
+      "トランスジェンダー",
+      "バイセクシュアル",
+      "プライド",
+      "フラグ",
+      "レズビアン",
+      "虹色の旗",
+      "bisexual",
+      "flag",
+      "gay",
+      "genderqueer",
+      "glbt",
+      "glbtq",
+      "lesbian",
+      "lgbt",
+      "lgbtq",
+      "lgbtqia",
+      "pride",
+      "queer",
+      "rainbow",
+      "trans",
+      "transgender"
     ],
-    "name" : "rainbow flag"
+    "name" : "レインボーフラッグ"
   }
 ]
