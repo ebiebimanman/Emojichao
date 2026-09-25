@@ -30,7 +30,7 @@ final class CurationModel {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let resources = projectRoot.appendingPathComponent("AppSources/EmojiShortcut/Resources")
+        let resources = projectRoot.appendingPathComponent("EmojiCatalogCore/Sources/EmojiCatalogCore/Resources")
         catalogURL = resources.appendingPathComponent("emoji-catalog.json")
         decisionsURL = projectRoot.appendingPathComponent("emoji-curation-decisions.json")
         curatedURL = resources.appendingPathComponent("emoji-catalog-curated.json")

@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import EmojiCatalogCore
 import ServiceManagement
 
 enum LaunchAtLogin {
