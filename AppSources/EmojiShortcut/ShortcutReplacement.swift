@@ -1,5 +1,6 @@
 import AppKit
 import ApplicationServices
+import EmojiCatalogCore
 import Foundation
 
 // Replacing by the number of keyDown events is unsafe with Japanese IMEs:
@@ -30,18 +31,11 @@ enum ShortcutReplacement {
         }
     }
 
-    /// A character that can begin a search word. Arrow and function keys arrive
-    /// as private-use scalars, and Return, Tab and Delete as control
-    /// characters. None of them belong in a query, and neither does a space,
-    /// which ends the shortcut, nor another ':', which starts a new one.
+    /// A character that can begin a search word. See
+    /// `EmojiSearchPolicy.isSearchableCharacter`, shared with the iOS
+    /// keyboard extension, for the actual rule.
     static func isSearchableCharacter(_ characters: String) -> Bool {
-        guard characters.count == 1, let scalar = characters.unicodeScalars.first else { return false }
-        if characters == ":" || characters == "：" { return false }
-        if (0xF700...0xF8FF).contains(scalar.value) { return false }
-        let rejected = CharacterSet.controlCharacters
-            .union(.whitespacesAndNewlines)
-            .union(.illegalCharacters)
-        return !rejected.contains(scalar)
+        EmojiSearchPolicy.isSearchableCharacter(characters)
     }
 
     static func focusedElement() -> AXUIElement? {

@@ -1,3 +1,4 @@
+import EmojiCatalogCore
 import Foundation
 
 enum JevError: LocalizedError {
