@@ -7,4 +7,3 @@ Emojichaoに同梱している絵文字カタログにはUnicode Consortiumの�
 ## Apple frameworks
 
 本アプリはmacOSに含まれるAppleのシステムフレームワークを使用します。それらにはAppleの各ライセンス条件が適用されます。
-

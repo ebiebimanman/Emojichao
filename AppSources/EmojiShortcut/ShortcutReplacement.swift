@@ -8,6 +8,7 @@ import Foundation
 // before the caret, and refuse to replace when it cannot be verified.
 enum ShortcutReplacement {
     private static let rangeType = AXValueType(rawValue: kAXValueCFRangeType)!
+    private static let rectType = AXValueType(rawValue: kAXValueCGRectType)!
 
     enum SelectionFailure: Error {
         case initialFocusUnavailable
@@ -31,11 +32,106 @@ enum ShortcutReplacement {
         }
     }
 
+    enum CharacterBeforeCaret: Equatable {
+        case character(Character)
+        case start
+        case unavailable
+    }
+
+    /// Prefer the editor's current caret context over remembered key events.
+    /// This stays correct after mouse clicks, arrow-key navigation, and focus
+    /// changes within one app. Canvas editors may expose no readable text, so
+    /// callers can fall back to their event history for `.unavailable` only.
+    static func characterBeforeCaret(in element: AXUIElement?) -> CharacterBeforeCaret {
+        guard let element, let caret = selectedRange(of: element), caret.length == 0 else {
+            return .unavailable
+        }
+        guard caret.location > 0 else { return .start }
+        // AX ranges use UTF-16 offsets. Read enough context to avoid slicing
+        // through a surrogate pair or a multi-scalar grapheme, then ask Swift
+        // for the final user-perceived character.
+        let length = min(caret.location, 32)
+        var range = CFRange(location: caret.location - length, length: length)
+        guard let text = textBeforeCaret(in: element, range: &range),
+              let character = text.last else { return .unavailable }
+        return .character(character)
+    }
+
+    enum TriggerBoundary: Equatable {
+        case allowed
+        /// Allowed only if the editor shows a half-width ':'. The key event
+        /// reports ':' even when a Japanese IME inserts '：', so callers
+        /// must confirm what actually reached the editor.
+        case halfWidthOnly
+        case rejected
+    }
+
+    /// A shortcut may follow whitespace or the start of text as before. It may
+    /// also follow Japanese text or a symbol without a space, but only as a
+    /// half-width ':' so that headings such as 「日時：」 stay plain text.
+    /// Latin letters and digits never start one: "14:30", "http:", "Re:".
+    static func triggerBoundary(after previous: Character?, trigger: String) -> TriggerBoundary {
+        guard let previous, !previous.isWhitespace else { return .allowed }
+        guard trigger == ":" else { return .rejected }
+        if previous == ":" || previous == "：" { return .rejected }
+        if isJapanese(previous) { return .halfWidthOnly }
+        if previous.isLetter || previous.isNumber { return .rejected }
+        return .halfWidthOnly
+    }
+
+    private static func isJapanese(_ character: Character) -> Bool {
+        guard let scalar = character.unicodeScalars.first else { return false }
+        switch scalar.value {
+        case 0x3005...0x3006, // 々 〆
+             0x3040...0x30FF, // kana
+             0x31F0...0x31FF, // katakana extensions
+             0x3400...0x4DBF, 0x4E00...0x9FFF, 0xF900...0xFAFF, // kanji
+             0xFF66...0xFF9F, // half-width katakana
+             0x20000...0x2FFFF:
+            return true
+        default:
+            return false
+        }
+    }
+
+    /// Whether the most recent trigger in the editor is a full-width '：'.
+    static func lastTriggerIsFullWidth(in text: String) -> Bool {
+        guard let last = text.last(where: { $0 == ":" || $0 == "：" }) else { return false }
+        return last == "："
+    }
+
+    /// Only printable text is useful as a fallback caret history. Navigation,
+    /// deletion, Tab, Escape, and function keys invalidate that history rather
+    /// than masquerading as the character before a newly positioned caret.
+    static func trackedCharacter(from characters: String) -> Character? {
+        guard characters.count == 1,
+              let character = characters.first,
+              let scalar = characters.unicodeScalars.first else { return nil }
+        if characters == "\n" || characters == "\r" { return character }
+        if (0xF700...0xF8FF).contains(scalar.value) { return nil }
+        let invalid = CharacterSet.controlCharacters
+            .union(.illegalCharacters)
+        return invalid.contains(scalar) ? nil : character
+    }
+
     /// A character that can begin a search word. See
     /// `EmojiSearchPolicy.isSearchableCharacter`, shared with the iOS
     /// keyboard extension, for the actual rule.
     static func isSearchableCharacter(_ characters: String) -> Bool {
         EmojiSearchPolicy.isSearchableCharacter(characters)
+    }
+
+    /// Electron apps such as Slack keep their web contents out of the AX tree
+    /// until an assistive app asks for it, so the editor exposes no caret or
+    /// text. Non-Electron apps reject the attribute, which is harmless.
+    static func enableManualAccessibility(for application: NSRunningApplication?) {
+        guard let application, application.processIdentifier > 0,
+              application.processIdentifier != getpid() else { return }
+        AXUIElementSetAttributeValue(
+            AXUIElementCreateApplication(application.processIdentifier),
+            "AXManualAccessibility" as CFString,
+            kCFBooleanTrue
+        )
     }
 
     static func focusedElement() -> AXUIElement? {
@@ -48,6 +144,34 @@ enum ShortcutReplacement {
               frontmost.processIdentifier > 0,
               frontmost.processIdentifier != getpid() else { return nil }
         return focusedElement(in: AXUIElementCreateApplication(frontmost.processIdentifier))
+    }
+
+    /// Returns the insertion point in AppKit screen coordinates. Accessibility
+    /// uses a top-left origin, while AppKit panels use a bottom-left origin.
+    static func caretScreenRect(in element: AXUIElement?) -> NSRect? {
+        guard let element, let caret = selectedRange(of: element) else { return nil }
+        var range = caret
+        guard let rangeValue = AXValueCreate(rangeType, &range) else { return nil }
+        var value: CFTypeRef?
+        guard AXUIElementCopyParameterizedAttributeValue(
+            element,
+            kAXBoundsForRangeParameterizedAttribute as CFString,
+            rangeValue,
+            &value
+        ) == .success, let value, CFGetTypeID(value) == AXValueGetTypeID() else {
+            return nil
+        }
+        var accessibilityRect = CGRect.zero
+        guard AXValueGetValue(value as! AXValue, rectType, &accessibilityRect),
+              accessibilityRect.origin.x.isFinite,
+              accessibilityRect.origin.y.isFinite else { return nil }
+        let primaryTop = NSScreen.screens.first?.frame.maxY ?? 0
+        return NSRect(
+            x: accessibilityRect.minX,
+            y: primaryTop - accessibilityRect.maxY,
+            width: max(1, accessibilityRect.width),
+            height: max(1, accessibilityRect.height)
+        )
     }
 
     // Read visible text around the current AX caret. Callers handling an IME

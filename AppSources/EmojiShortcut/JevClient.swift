@@ -25,15 +25,18 @@ struct JevClient: Sendable {
         guard !entries.isEmpty else { return [] }
 
         // Choice accepts at most 255 alternatives, so a full catalog search is
-        // split into chunks. The chunks run concurrently and their scores are
-        // merged directly: a second pass over the winners used to re-rank them,
-        // but it cost a whole extra round trip (0.65s -> 0.52s once removed)
-        // and changed the pick in 3 of 12 measured sentences, each time between
-        // two reasonable emoji.
+        // split into chunks that run concurrently. Probabilities are only
+        // comparable within one call: a chunk with no good option (symbols,
+        // animals) piles its mass onto its least-bad pick, while a chunk with
+        // many good options splits it. Merging raw scores put 🦥 first for
+        // "nayamu", so the finalists get one more pass together.
         let chunks = stride(from: 0, to: entries.count, by: 255).map {
             Array(entries[$0..<min($0 + 255, entries.count)])
         }
-        let perChunk = max(3, 12 / max(1, chunks.count))
+        guard chunks.count > 1 else {
+            return try await rankChunk(query: query, context: context, entries: entries, apiKey: apiKey, limit: 12).map(\.0)
+        }
+        let perChunk = 6
         var finalists: [(EmojiEntry, Double)] = []
         for batchStart in stride(from: 0, to: chunks.count, by: 12) {
             let batch = Array(chunks[batchStart..<min(batchStart + 12, chunks.count)])
@@ -47,11 +50,19 @@ struct JevClient: Sendable {
             }
             finalists.append(contentsOf: batchResults)
         }
-        return Array(finalists.sorted { $0.1 > $1.1 }.map(\.0).prefix(12))
+        let candidates = Array(finalists.sorted { $0.1 > $1.1 }.map(\.0).prefix(255))
+        return try await rankChunk(query: query, context: context, entries: candidates, apiKey: apiKey, limit: 12).map(\.0)
     }
 
     static func state(query: String, context: String?) -> String {
-        if !query.isEmpty { return query }
+        if !query.isEmpty {
+            // Jev read bare "nayamu" as sleepy (😴 😪 🦥). A kana reading helps
+            // romaji; the original stays first so English words still work.
+            let isLatinWord = query.unicodeScalars.allSatisfy { $0.isASCII && CharacterSet.letters.contains($0) }
+            guard isLatinWord, let kana = query.lowercased().applyingTransform(.latinToHiragana, reverse: false),
+                  !kana.unicodeScalars.contains(where: \.isASCII) else { return query }
+            return "\(query)（\(kana)）"
+        }
         return context.map { String($0.suffix(10)) } ?? ""
     }
 
