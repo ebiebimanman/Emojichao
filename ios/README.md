@@ -2,8 +2,10 @@
 
 This is the mobile counterpart discussed for Emojichao: not a full keyboard
 replacement (Simeji-style), but an **add-on keyboard** you switch to with the
-globe key just to search emoji by shortcode, the same way apps like "Emojo"
-work. It reuses the exact catalog/scoring logic from the macOS app via the
+globe key. Unlike the macOS app's ':shortcode' trigger, this keyboard
+searches by whatever word you're currently typing, no explicit trigger
+needed — the same way apps like "Emojo" work. It reuses the exact
+catalog/scoring logic from the macOS app via the
 `EmojiCatalogCore` Swift package (see `EmojiCatalogCore/`, at the repo root —
 kept as its own standalone package, separate from this repo's root
 `Package.swift`, specifically so it has no AppKit-only targets in its
@@ -19,9 +21,10 @@ few small mistakes the first time you build it in Xcode.
 
 - `EmojichaoKeyboard/KeyboardViewController.swift` — the `UIInputViewController`
   subclass: draws a minimal single-layout QWERTY (no shift, no symbols page,
-  no autocorrect — just enough to type a `:shortcode` query), tracks the
-  `:query` buffer the same way the macOS app's text-search mode does, and
-  shows matches in a candidate strip above the keys.
+  no autocorrect), tracks the word currently being typed since the last word
+  boundary (space, return, punctuation), and shows matches in a candidate
+  strip above the keys — updated on every keystroke, no ':' needed. Tapping
+  a candidate deletes the typed word and inserts the emoji in its place.
 - `EmojichaoKeyboard/EmojiCandidateStripView.swift` — the horizontally
   scrolling row of tappable emoji candidates, drawn by the extension itself
   (neither iOS nor Android give third-party keyboards a way to inject into
@@ -63,9 +66,14 @@ shortcode-character rules the macOS app uses, unchanged.
 
 ## Known simplifications (by design, for this first pass)
 
-- No shift/caps, symbols page, or autocorrect. Shortcode queries are typically
+- No shift/caps, symbols page, or autocorrect. Search words are typically
   short romaji/English fragments (mirroring the macOS app's text-search mode),
   so a plain lowercase layout covers the core use case.
+- Because there's no explicit trigger, the candidate strip updates on every
+  keystroke of the current word — this is closer to the "noisy" built-in IME
+  emoji suggestions discussed earlier than the macOS app's on-demand ':'
+  search. If that turns out to be too eager in practice, an explicit trigger
+  is easy to bring back.
 - No remote (Jev) semantic ranking — everything is `EmojiCatalog.localMatches`,
   matching the "local-only first" design discussed for privacy and to avoid
   the iOS "Allow Full Access" prompt entirely in this phase.

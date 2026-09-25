@@ -2,22 +2,22 @@ import EmojiCatalogCore
 import UIKit
 
 /// A minimal add-on keyboard (switched to via the globe key, same as
-/// Gboard/Simeji) whose only job is ':shortcode' emoji search. It reuses the
-/// exact catalog/scoring logic and shortcode-character rules from the macOS
-/// app's EmojiCatalogCore package.
+/// Gboard/Simeji) that searches emoji by the word you're currently typing,
+/// no explicit trigger needed. It reuses the exact catalog/scoring logic
+/// from the macOS app's EmojiCatalogCore package.
 ///
 /// This is a Phase 1 (local-only) build: no network access, so no "Allow
 /// Full Access" prompt is needed to use it. The letter layout is a single
 /// lowercase QWERTY row set with no shift, symbols page, or autocorrect —
-/// enough to type a shortcode query, not a full replacement for the user's
+/// enough to type a search word, not a full replacement for the user's
 /// everyday keyboard.
 @MainActor
 final class KeyboardViewController: UIInputViewController {
     private let candidateStrip = EmojiCandidateStripView()
 
-    /// Text typed since an unmatched ':' started a shortcode search, not
-    /// including the ':' itself. nil when no search is active.
-    private var activeQuery: String?
+    /// The word currently being typed, since the last word boundary
+    /// (space, return, punctuation). Empty when there's nothing to search.
+    private var currentWord = ""
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -103,7 +103,7 @@ final class KeyboardViewController: UIInputViewController {
         return button
     }
 
-    // MARK: - Typing and shortcode search
+    // MARK: - Typing and word search
 
     private func insert(_ characters: String) {
         textDocumentProxy.insertText(characters)
@@ -112,55 +112,43 @@ final class KeyboardViewController: UIInputViewController {
 
     private func insertReturn() {
         textDocumentProxy.insertText("\n")
-        endQuery()
+        endWord()
     }
 
     private func handleBackspace() {
         textDocumentProxy.deleteBackward()
-        guard var query = activeQuery else { return }
-        guard !query.isEmpty else {
-            // The ':' itself was just deleted.
-            endQuery()
-            return
-        }
-        query.removeLast()
-        activeQuery = query
-        updateCandidates(for: query)
+        guard !currentWord.isEmpty else { return }
+        currentWord.removeLast()
+        updateCandidates(for: currentWord)
     }
 
     private func trackTyped(_ characters: String) {
-        if characters == ":" {
-            activeQuery = ""
-            updateCandidates(for: "")
-            return
-        }
-        guard activeQuery != nil else { return }
         guard EmojiSearchPolicy.isSearchableCharacter(characters) else {
-            endQuery()
+            endWord()
             return
         }
-        activeQuery! += characters
-        updateCandidates(for: activeQuery!)
+        currentWord += characters
+        updateCandidates(for: currentWord)
     }
 
     private func updateCandidates(for query: String) {
         candidateStrip.update(candidates: EmojiCatalog.shared.localMatches(query))
     }
 
-    private func endQuery() {
-        activeQuery = nil
+    private func endWord() {
+        currentWord = ""
         candidateStrip.update(candidates: [])
     }
 }
 
 extension KeyboardViewController: EmojiCandidateStripViewDelegate {
     func candidateStrip(_ stripView: EmojiCandidateStripView, didSelect entry: EmojiEntry) {
-        guard let query = activeQuery else { return }
-        // Remove the typed ':query', including the ':', before inserting the emoji.
-        for _ in 0...query.count {
+        guard !currentWord.isEmpty else { return }
+        // Remove the typed word before inserting the emoji in its place.
+        for _ in 0..<currentWord.count {
             textDocumentProxy.deleteBackward()
         }
         textDocumentProxy.insertText(entry.emoji)
-        endQuery()
+        endWord()
     }
 }
