@@ -4,7 +4,10 @@ This is the mobile counterpart discussed for Emojichao: not a full keyboard
 replacement (Simeji-style), but an **add-on keyboard** you switch to with the
 globe key just to search emoji by shortcode, the same way apps like "Emojo"
 work. It reuses the exact catalog/scoring logic from the macOS app via the
-new `EmojiCatalogCore` Swift package target (see `AppSources/EmojiCatalogCore`).
+`EmojiCatalogCore` Swift package (see `EmojiCatalogCore/`, at the repo root —
+kept as its own standalone package, separate from this repo's root
+`Package.swift`, specifically so it has no AppKit-only targets in its
+manifest and Xcode can resolve it cleanly for an iOS target).
 
 **This code has not been built or run.** The session that wrote it runs in a
 Linux container with no Swift toolchain, no Xcode, and no iOS SDK — there is
@@ -37,11 +40,14 @@ shortcode-character rules the macOS app uses, unchanged.
    how to enable the keyboard.
 2. **Add a Custom Keyboard Extension target** (File → New → Target → Custom
    Keyboard Extension) to that project.
-3. **Add this repository as a local Swift Package dependency** (File → Add
-   Package Dependencies → Add Local... → select the Emojichao repo root,
-   which contains `Package.swift`). Link the `EmojiCatalogCore` library
-   product to **both** the container app target and the keyboard extension
-   target.
+3. **Add the `EmojiCatalogCore` folder itself as a local Swift Package
+   dependency** — File → Add Package Dependencies → Add Local... → select
+   `EmojiCatalogCore/` at the repo root (the folder that directly contains
+   *its own* `Package.swift`; not the repo root itself, and not
+   `AppSources/`). Link the `EmojiCatalogCore` library product to **both**
+   the container app target and the keyboard extension target (General tab →
+   "Frameworks, Libraries, and Embedded Content" → "+" → search
+   "EmojiCatalogCore").
 4. Delete the extension template's placeholder `KeyboardViewController.swift`
    and add the two files from `ios/EmojichaoKeyboard/` in its place (drag them
    into the extension target, making sure "Copy items if needed" is checked

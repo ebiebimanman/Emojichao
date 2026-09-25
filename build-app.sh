@@ -37,7 +37,7 @@ mkdir -p "$staging_dir/Contents/MacOS" "$staging_dir/Contents/Resources"
 cp "$bin_dir/Emojichao" "$staging_dir/Contents/MacOS/Emojichao"
 cp AppInfo.plist "$staging_dir/Contents/Info.plist"
 cp -R "$bin_dir/Emojichao_EmojiShortcut.bundle" "$staging_dir/Contents/Resources/"
-cp -R "$bin_dir/Emojichao_EmojiCatalogCore.bundle" "$staging_dir/Contents/Resources/"
+cp -R "$bin_dir/EmojiCatalogCore_EmojiCatalogCore.bundle" "$staging_dir/Contents/Resources/"
 cp AppSources/EmojiShortcut/Resources/Icons/AppIcon.icns "$staging_dir/Contents/Resources/AppIcon.icns"
 if [ "$mode" = release ]; then
     codesign --force --deep --options runtime --timestamp --sign "$signing_identity" "$staging_dir"

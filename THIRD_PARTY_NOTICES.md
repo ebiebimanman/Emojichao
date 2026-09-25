@@ -2,7 +2,7 @@
 
 ## Unicode data
 
-Emojichaoに同梱している絵文字カタログにはUnicode Consortiumのデータを利用しています。適用されるライセンス全文は `AppSources/EmojiCatalogCore/Resources/UNICODE-LICENSE.txt` を参照してください。
+Emojichaoに同梱している絵文字カタログにはUnicode Consortiumのデータを利用しています。適用されるライセンス全文は `EmojiCatalogCore/Sources/EmojiCatalogCore/Resources/UNICODE-LICENSE.txt` を参照してください。
 
 ## Apple frameworks
 

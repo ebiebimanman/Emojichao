@@ -3,24 +3,22 @@ import PackageDescription
 
 let package = Package(
     name: "Emojichao",
-    platforms: [.macOS(.v13), .iOS(.v16)],
+    platforms: [.macOS(.v13)],
     products: [
         .executable(name: "Emojichao", targets: ["EmojiShortcut"]),
-        .executable(name: "EmojiCuration", targets: ["EmojiCuration"]),
-        .library(name: "EmojiCatalogCore", targets: ["EmojiCatalogCore"])
+        .executable(name: "EmojiCuration", targets: ["EmojiCuration"])
+    ],
+    dependencies: [
+        // The portable catalog/scoring/shortcode-search logic shared with
+        // the iOS keyboard extension. Kept as its own package (rather than a
+        // target here) so it stays free of this package's AppKit-only
+        // targets — Xcode needs to resolve it standalone for an iOS target.
+        .package(path: "EmojiCatalogCore")
     ],
     targets: [
-        // Portable emoji lookup logic (catalog, scoring, shortcode-search
-        // policy) shared between the macOS app and the iOS keyboard
-        // extension. Foundation-only, no AppKit/UIKit dependency.
-        .target(
-            name: "EmojiCatalogCore",
-            path: "AppSources/EmojiCatalogCore",
-            resources: [.process("Resources")]
-        ),
         .executableTarget(
             name: "EmojiShortcut",
-            dependencies: ["EmojiCatalogCore"],
+            dependencies: [.product(name: "EmojiCatalogCore", package: "EmojiCatalogCore")],
             path: "AppSources/EmojiShortcut",
             resources: [.process("Resources")]
         ),
@@ -30,7 +28,10 @@ let package = Package(
         ),
         .testTarget(
             name: "EmojiShortcutTests",
-            dependencies: ["EmojiShortcut", "EmojiCatalogCore"]
+            dependencies: [
+                "EmojiShortcut",
+                .product(name: "EmojiCatalogCore", package: "EmojiCatalogCore")
+            ]
         )
     ]
 )
