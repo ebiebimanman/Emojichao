@@ -24,6 +24,10 @@ final class KeyboardViewController: UIInputViewController {
         candidateStrip.delegate = self
         candidateStrip.isHidden = true
 
+        // Custom keyboard extensions can otherwise report a zero-height view
+        // on first layout; an explicit height is the standard workaround.
+        view.heightAnchor.constraint(equalToConstant: 260).isActive = true
+
         let rows = buildKeyRows()
         view.addSubview(candidateStrip)
         view.addSubview(rows)

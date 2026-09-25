@@ -6,7 +6,7 @@ public enum EmojiSearchPolicy {
         public let query: String
     }
 
-    @frozen public enum SelectionAction: Equatable {
+    public enum SelectionAction: Equatable {
         case select
         case waitForSearch
         case passThrough
