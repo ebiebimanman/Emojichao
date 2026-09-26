@@ -15,6 +15,16 @@ enum EmojiSuggestions {
     /// How many kanji conversions to search, best first.
     private static let conversionsSearched = 8
 
+    /// Load the catalog and build the search index ahead of the first
+    /// keystroke; otherwise that keystroke pays for both and the key feels
+    /// dead. Deferred a turn so the keyboard itself appears first.
+    static func warmUp() {
+        DispatchQueue.main.async {
+            _ = index.count
+            _ = byEmoji.count
+        }
+    }
+
     /// - Parameters:
     ///   - reading: The kana (or ABC word) as typed.
     ///   - conversions: Kanji conversions of exactly the reading, best

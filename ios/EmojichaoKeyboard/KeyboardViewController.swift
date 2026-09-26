@@ -25,6 +25,10 @@ final class KeyboardViewController: UIInputViewController {
     private var keyTrailing: NSLayoutConstraint!
 
     private static let keySpacing: CGFloat = 6
+    /// Keys are 1pt shorter and 2pt narrower than the stock ones, which
+    /// were 209pt tall for four rows and edge to edge.
+    private static let keyAreaHeight: CGFloat = 205
+    private static let keyWidthTrim: CGFloat = 5 // per side: 10pt off five columns
     private static let edgeInset: CGFloat = 4
     /// How much the keys shrink by in the one-handed layout.
     private static let oneHandedGutter: CGFloat = 64
@@ -70,13 +74,13 @@ final class KeyboardViewController: UIInputViewController {
         candidateStrip.showHandednessPicker(current: handedness)
         engine.onCandidatesChanged = { [weak self] in self?.showCandidates() }
         engine.warmUp()
+        EmojiSuggestions.warmUp()
 
         // Custom keyboard extensions can otherwise report a zero-height view
         // on first layout; an explicit height is the standard workaround.
-        // Keys keep their 216pt; the candidate rows (conversions, then
-        // emoji) sit on top.
+        // The candidate rows (conversions, then emoji) sit on top.
         let stripHeight = EmojiCandidateStripView.rowHeight * 2 + 1
-        view.heightAnchor.constraint(equalToConstant: 216 + stripHeight + 10).isActive = true
+        view.heightAnchor.constraint(equalToConstant: Self.keyAreaHeight + stripHeight + 4).isActive = true
 
         view.addSubview(candidateStrip)
         view.addSubview(keyContainer)
@@ -94,7 +98,7 @@ final class KeyboardViewController: UIInputViewController {
             keyLeading,
             keyTrailing,
             keyContainer.topAnchor.constraint(equalTo: candidateStrip.bottomAnchor, constant: 4),
-            keyContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -6)
+            keyContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 
         setUpChevrons()
@@ -283,8 +287,9 @@ final class KeyboardViewController: UIInputViewController {
     private func applyHandedness() {
         let inset = Self.edgeInset
         let gutter = Self.oneHandedGutter
-        keyLeading.constant = handedness == .right ? gutter : inset
-        keyTrailing.constant = handedness == .left ? -gutter : -inset
+        let trim = Self.keyWidthTrim
+        keyLeading.constant = (handedness == .right ? gutter : inset) + trim
+        keyTrailing.constant = -((handedness == .left ? gutter : inset) + trim)
         leftChevron.isHidden = handedness != .right
         rightChevron.isHidden = handedness != .left
     }
