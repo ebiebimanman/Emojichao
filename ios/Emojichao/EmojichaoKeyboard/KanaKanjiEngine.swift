@@ -1,3 +1,4 @@
+import EmojiCatalogCore
 import Foundation
 import KanaKanjiConverterModuleWithDefaultDictionary
 import os
@@ -139,14 +140,23 @@ private final class ConversionWorker: @unchecked Sendable {
         latestGeneration.withLock { $0 = generation }
         queue.async {
             guard self.latestGeneration.withLock({ $0 }) == generation else { return }
+            let reading = composing.convertTarget
             var seen = Set<String>()
             let results = self.loadedConverter()
                 .requestCandidates(composing, options: Self.options)
                 .mainResults
                 // Emoji have their own row; keep this one to words.
                 .filter { !Self.isEmojiOnly($0.text) && seen.insert($0.text).inserted }
-                .prefix(Self.maxCandidates)
-            let candidates = Array(results)
+            // Settle the converter's near ties (よく自体, 4人の中で一番) and
+            // put conversions of the whole reading ahead of predictions.
+            let order = ConversionRanking.order(results.map(Self.rankingCandidate), reading: reading)
+            var shown = order.prefix(Self.maxCandidates).map { results[$0] }
+            // The reading as typed always stays pickable.
+            if !shown.contains(where: { $0.text == reading }),
+               let kana = results.first(where: { $0.text == reading }) {
+                shown.append(kana)
+            }
+            let candidates = shown
             DispatchQueue.main.async {
                 MainActor.assumeIsolated { completion(candidates) }
             }
@@ -167,6 +177,15 @@ private final class ConversionWorker: @unchecked Sendable {
             converter.stopComposition()
             if saveLearning { converter.commitUpdateLearningData() }
         }
+    }
+
+    private static func rankingCandidate(_ candidate: Candidate) -> ConversionRanking.Candidate {
+        ConversionRanking.Candidate(
+            text: candidate.text,
+            value: Double(candidate.value),
+            rubyCount: candidate.rubyCount,
+            segments: candidate.data.map { ConversionRanking.Segment(word: $0.word, ruby: $0.ruby) }
+        )
     }
 
     private static func isEmojiOnly(_ text: String) -> Bool {
@@ -195,6 +214,11 @@ private final class ConversionWorker: @unchecked Sendable {
         let memory = base.appendingPathComponent("KanaKanji", isDirectory: true)
         try? FileManager.default.createDirectory(at: memory, withIntermediateDirectories: true)
         return ConvertRequestOptions(
+            // On iOS the converter defaults to guessing flick slips, trying
+            // じ for し and で for て. Its guesses outscored what was typed
+            // (しいていうなら → 爺で言うなら, よくしたい → よく自体), and
+            // dakuten here are added on purpose with 小゛゜.
+            needTypoCorrection: false,
             requireJapanesePrediction: true,
             requireEnglishPrediction: false,
             keyboardLanguage: .ja_JP,

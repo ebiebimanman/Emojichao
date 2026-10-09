@@ -32,10 +32,20 @@ enum KeyboardHandedness: String, CaseIterable {
 
 /// The two rows above the keys, where a system keyboard shows its
 /// candidates: emoji for the kana being composed on top, its kanji
-/// conversions underneath, next to the keys. While Jev is still ranking, three pulsing dots follow
-/// the emoji. With nothing in progress it shows the 左寄せ / 通常 / 右寄せ
-/// picker instead, since the stock globe-key menu for it isn't reachable.
+/// conversions underneath, next to the keys. While emoji are being looked
+/// up, a 検索中… badge spins at the end of the emoji row (which dims while
+/// its emoji are left over from before); when the search is done the badge
+/// goes, or reads 該当なし for a moment if nothing matched. With nothing in progress it shows the
+/// 左寄せ / 通常 / 右寄せ picker instead, since the stock globe-key menu for
+/// it isn't reachable.
 final class EmojiCandidateStripView: UIView {
+    enum SearchState: Equatable {
+        case idle
+        /// `stale`: the emoji showing are for what was typed before.
+        case searching(stale: Bool)
+        case finished(found: Bool)
+    }
+
     weak var delegate: EmojiCandidateStripViewDelegate?
 
     /// Each row is the whole touch target, so keep it at the 44pt minimum.
@@ -52,8 +62,15 @@ final class EmojiCandidateStripView: UIView {
     var emoji: [EmojiEntry] { candidates }
     private var conversions: [String] = []
     private var selectedConversion: Int?
-    private let loadingDots = LoadingDotsView()
-    private var isLoading = false
+    private let statusBadge = SearchStatusView()
+    private var searchState = SearchState.idle
+    /// Shows the searching look after a beat, or hides 該当なし after one.
+    private var statusTimer: Task<Void, Never>?
+    /// Local lookups usually land within this; only slower searches (Jev)
+    /// show the badge, so typing doesn't make the row flicker.
+    private static let searchingDelay: Duration = .milliseconds(150)
+    private static let noMatchesDuration: Duration = .seconds(1.2)
+    private static let dimmedAlpha: CGFloat = 0.45
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -83,6 +100,15 @@ final class EmojiCandidateStripView: UIView {
             conversionRow.heightAnchor.constraint(equalTo: emojiRow.heightAnchor)
         ])
 
+        // Over the end of the emoji row; it takes no touches, so the emoji
+        // under it stay tappable.
+        addSubview(statusBadge)
+        statusBadge.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            statusBadge.trailingAnchor.constraint(equalTo: emojiRow.trailingAnchor, constant: -6),
+            statusBadge.centerYAnchor.constraint(equalTo: emojiRow.centerYAnchor)
+        ])
+
         handednessPicker.axis = .horizontal
         handednessPicker.spacing = 24
         handednessPicker.isHidden = true
@@ -109,7 +135,7 @@ final class EmojiCandidateStripView: UIView {
 
     /// Swap the candidate rows for the handedness picker, lighting `current`.
     func showHandednessPicker(current: KeyboardHandedness) {
-        setLoading(false)
+        setSearchState(.idle)
         update(conversions: [], selected: nil, emoji: [])
         for (option, button) in handednessButtons {
             let selected = option == current
@@ -126,7 +152,7 @@ final class EmojiCandidateStripView: UIView {
         update(conversions: [], selected: nil, emoji: candidates)
     }
 
-    /// Replace just the emoji row, keeping the conversions (Jev results).
+    /// Replace just the emoji row, keeping the conversions (search results).
     func updateEmoji(_ emoji: [EmojiEntry]) {
         update(conversions: conversions, selected: selectedConversion, emoji: emoji)
     }
@@ -165,7 +191,7 @@ final class EmojiCandidateStripView: UIView {
             conversionRow.reveal(conversionButtons[selected])
         }
 
-        var emojiItems: [UIView] = emoji.enumerated().map { index, entry in
+        let emojiItems: [UIView] = emoji.enumerated().map { index, entry in
             let button = UIButton(type: .system)
             button.setTitle(entry.emoji, for: .normal)
             button.titleLabel?.font = .systemFont(ofSize: 28)
@@ -174,28 +200,77 @@ final class EmojiCandidateStripView: UIView {
             button.addTarget(self, action: #selector(candidateTapped(_:)), for: .touchUpInside)
             return button
         }
-        if isLoading { emojiItems.append(loadingDots) }
         emojiRow.setItems(emojiItems)
-        // Re-added by the rebuild above, so restart its animation too.
-        if isLoading { loadingDots.startAnimating() }
         updateVisibility()
     }
 
-    func setLoading(_ loading: Bool) {
-        guard loading != isLoading else { return }
-        isLoading = loading
-        if loading {
-            emojiRow.append(loadingDots)
-            loadingDots.startAnimating()
-        } else {
-            loadingDots.stopAnimating()
-            loadingDots.removeFromSuperview()
+    /// Show whether emoji are still being looked up, or how it went.
+    func setSearchState(_ state: SearchState) {
+        // The badge sits over the emoji row; with the handedness picker up
+        // instead, there's nothing for it to describe.
+        let state = rows.isHidden ? .idle : state
+        guard state != searchState else { return }
+        let previous = searchState
+        searchState = state
+        defer { updateVisibility() }
+        if case .searching(let stale) = state, case .searching = previous {
+            // Still searching (now only Jev, say): keep the badge, and just
+            // brighten the row once its emoji are current. If the badge is
+            // still waiting to appear, it'll pick up the new state itself.
+            if statusTimer == nil {
+                UIView.animate(withDuration: 0.15) { self.emojiRow.alpha = stale ? Self.dimmedAlpha : 1 }
+            }
+            return
         }
-        updateVisibility()
+        statusTimer?.cancel()
+        statusTimer = nil
+        switch state {
+        case .idle:
+            statusBadge.layer.removeAllAnimations()
+            statusBadge.alpha = 0
+            statusBadge.stop()
+            emojiRow.alpha = 1
+        case .searching:
+            let delay = Self.searchingDelay
+            let dimmedAlpha = Self.dimmedAlpha
+            statusTimer = Task { [weak self] in
+                try? await Task.sleep(for: delay)
+                guard !Task.isCancelled, let self, case .searching(let stale) = self.searchState else { return }
+                self.statusTimer = nil
+                self.statusBadge.showSearching()
+                self.bringSubviewToFront(self.statusBadge)
+                UIView.animate(withDuration: 0.15) {
+                    self.statusBadge.alpha = 1
+                    // Dim emoji that are still for what was typed before.
+                    self.emojiRow.alpha = stale ? dimmedAlpha : 1
+                }
+            }
+        case .finished(found: true):
+            UIView.animate(withDuration: 0.2, delay: 0, options: .beginFromCurrentState) {
+                self.statusBadge.alpha = 0
+                self.emojiRow.alpha = 1
+            } completion: { _ in
+                if case .finished = self.searchState { self.statusBadge.stop() }
+            }
+        case .finished(found: false):
+            statusBadge.showNoMatches()
+            bringSubviewToFront(statusBadge)
+            UIView.animate(withDuration: 0.15, delay: 0, options: .beginFromCurrentState) {
+                self.statusBadge.alpha = 1
+                self.emojiRow.alpha = 1
+            }
+            let duration = Self.noMatchesDuration
+            statusTimer = Task { [weak self] in
+                try? await Task.sleep(for: duration)
+                guard !Task.isCancelled, let self, self.searchState == .finished(found: false) else { return }
+                self.statusTimer = nil
+                UIView.animate(withDuration: 0.3) { self.statusBadge.alpha = 0 }
+            }
+        }
     }
 
     private func updateVisibility() {
-        isHidden = candidates.isEmpty && conversions.isEmpty && !isLoading
+        isHidden = candidates.isEmpty && conversions.isEmpty && searchState == .idle
     }
 
     @objc private func candidateTapped(_ sender: UIButton) {
@@ -243,40 +318,43 @@ private final class CandidateRow: UIView {
         scrollView.setContentOffset(.zero, animated: false)
     }
 
-    func append(_ item: UIView) {
-        stackView.addArrangedSubview(item)
-    }
-
     func reveal(_ item: UIView) {
         layoutIfNeeded()
         scrollView.scrollRectToVisible(item.frame.insetBy(dx: -40, dy: 0), animated: true)
     }
 }
 
-/// Three dots that pulse in turn, like a typing indicator.
-private final class LoadingDotsView: UIView {
-    private let dots: [UIView] = (0..<3).map { _ in UIView() }
-    private static let dotSize: CGFloat = 8
+/// The badge over the end of the emoji row: a spinner with 検索中… while
+/// searching, 該当なし when nothing matched. It never takes touches.
+private final class SearchStatusView: UIView {
+    private let spinner = UIActivityIndicatorView(style: .medium)
+    private let label = UILabel()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        let stack = UIStackView(arrangedSubviews: dots)
+        isUserInteractionEnabled = false
+        alpha = 0
+        // Resolved per appearance, so it follows light and dark mode.
+        backgroundColor = UIColor { traits in
+            UIColor.secondarySystemBackground.resolvedColor(with: traits).withAlphaComponent(0.95)
+        }
+        layer.cornerRadius = 14
+        spinner.color = .secondaryLabel
+        spinner.hidesWhenStopped = true
+        label.font = .systemFont(ofSize: 13, weight: .medium)
+        label.textColor = .secondaryLabel
+
+        let stack = UIStackView(arrangedSubviews: [spinner, label])
         stack.axis = .horizontal
-        stack.spacing = 5
+        stack.spacing = 6
         stack.alignment = .center
         stack.translatesAutoresizingMaskIntoConstraints = false
         addSubview(stack)
-        for dot in dots {
-            dot.backgroundColor = .secondaryLabel
-            dot.layer.cornerRadius = Self.dotSize / 2
-            dot.translatesAutoresizingMaskIntoConstraints = false
-            dot.widthAnchor.constraint(equalToConstant: Self.dotSize).isActive = true
-            dot.heightAnchor.constraint(equalToConstant: Self.dotSize).isActive = true
-        }
         NSLayoutConstraint.activate([
-            stack.centerYAnchor.constraint(equalTo: centerYAnchor),
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 10),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10)
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
+            stack.topAnchor.constraint(equalTo: topAnchor, constant: 5),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5)
         ])
     }
 
@@ -284,20 +362,17 @@ private final class LoadingDotsView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func startAnimating() {
-        for (index, dot) in dots.enumerated() {
-            let pulse = CABasicAnimation(keyPath: "opacity")
-            pulse.fromValue = 1
-            pulse.toValue = 0.25
-            pulse.duration = 0.45
-            pulse.autoreverses = true
-            pulse.repeatCount = .infinity
-            pulse.beginTime = CACurrentMediaTime() + Double(index) * 0.15
-            dot.layer.add(pulse, forKey: "pulse")
-        }
+    func showSearching() {
+        label.text = "検索中…"
+        spinner.startAnimating()
     }
 
-    func stopAnimating() {
-        dots.forEach { $0.layer.removeAnimation(forKey: "pulse") }
+    func showNoMatches() {
+        label.text = "該当なし"
+        spinner.stopAnimating()
+    }
+
+    func stop() {
+        spinner.stopAnimating()
     }
 }

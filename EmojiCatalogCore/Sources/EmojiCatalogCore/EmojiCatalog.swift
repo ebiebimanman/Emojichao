@@ -69,18 +69,22 @@ public final class EmojiCatalog {
         guard !normalized.isEmpty else { return [] }
         let matches = searchableEntries.filter { $0.matchesLocalQuery(normalized) }
         return matches.sorted {
-            let leftScore = localMatchScore($0, query: normalized)
-            let rightScore = localMatchScore($1, query: normalized)
+            let leftScore = $0.localMatchScore(normalized)
+            let rightScore = $1.localMatchScore(normalized)
             return leftScore == rightScore ? $0.name < $1.name : leftScore > rightScore
         }.prefix(12).map { $0 }
     }
+}
 
-    private func localMatchScore(_ entry: EmojiEntry, query: String) -> Int {
-        let name = entry.name.lowercased()
-        let englishWords = entry.englishName.lowercased()
+extension EmojiEntry {
+    /// Orders entries that `matchesLocalQuery` accepted; `query` is
+    /// trimmed and lowercased.
+    func localMatchScore(_ query: String) -> Int {
+        let name = self.name.lowercased()
+        let englishWords = englishName.lowercased()
             .split(whereSeparator: { !$0.isLetter && !$0.isNumber })
             .map(String.init)
-        let keywords = entry.keywords.map { $0.lowercased() }
+        let keywords = self.keywords.map { $0.lowercased() }
         if name == query || englishWords.contains(query) || keywords.contains(query) { return 300 }
         if name.hasPrefix(query) || englishWords.contains(where: { $0.hasPrefix(query) }) { return 200 }
         return keywords.contains(where: { $0.hasPrefix(query) }) ? 100 : 0

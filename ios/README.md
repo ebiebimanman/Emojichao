@@ -100,7 +100,10 @@ has fixed it before.
   picks is on and stored in the App Group. Conversion runs on a
   background queue, so keys never wait on it. The package is about 6×
   slower unoptimized (~80 ms vs ~13 ms per key in the simulator), so both
-  schemes' Run action uses the Release configuration. Emoji are matched on both the
+  schemes' Run action uses the Release configuration. The converter's
+  flick-typo guessing is off (it turned しいて into 爺で), and
+  `ConversionRanking` (in EmojiCatalogCore) reorders its near ties, e.g.
+  良くしたい over よくしたい, 4人の中で1番 over 4人の中で一番. Emoji are matched on both the
   converted text (猫) and the reading (ねこ); Jev gets the converted text
   plus up to 200 characters before the cursor as context.
 - **Only kana compose.** ABC/☆123 input goes straight into the document,
@@ -109,7 +112,12 @@ has fixed it before.
   doesn't notice and the next keystroke may re-mark the old reading.
 - **The candidate strip updates on every keystroke**, since there's no
   explicit trigger — closer to the "noisy" built-in IME emoji suggestions
-  discussed earlier than the macOS app's on-demand ':' search.
+  discussed earlier than the macOS app's on-demand ':' search. Searches run
+  in the background (a 検索中… badge shows while one takes a moment), so
+  keys never wait on them. After a 確定, once the sentence ends in 。！？ or
+  typing pauses for 0.7 s, the strip offers emoji for the whole last
+  sentence (local keyword matching, plus Jev on that sentence when it's
+  enabled).
 - **Jev requires two separate opt-ins** (a saved API key, and "Allow Full
   Access" in Settings) by design — the keyboard never asks for either on its
   own, and works local-only if neither is set.

@@ -13,7 +13,12 @@ import UIKit
 /// "Allow Full Access" and has saved a Jev API key (via the container app's
 /// settings screen, shared through the App Group in JevKeyStore.swift), the
 /// candidate strip is re-ranked by Jev's semantic search on top of the
-/// immediate local results.
+/// local results.
+///
+/// Every emoji search (local scoring, Jev) runs off the main thread and is
+/// dropped if the text moved on meanwhile, so keys answer at once even
+/// mid-search. Once a sentence looks finished (it ends in 。！？, or typing
+/// pauses after a 確定), the row offers emoji for the whole sentence.
 @MainActor
 final class KeyboardViewController: UIInputViewController {
     private let candidateStrip = EmojiCandidateStripView()
@@ -51,6 +56,29 @@ final class KeyboardViewController: UIInputViewController {
     /// か, pause, か types かか.
     private static let toggleTimeout: TimeInterval = 1.0
 
+    /// The catalog's search index, built in the background on first use.
+    private lazy var searchIndex = EmojiSuggestions.makeIndex()
+    /// The local search for the emoji row; each keystroke replaces it.
+    private var localSearch: Task<Void, Never>?
+    private var localGeneration = 0
+    /// What's still out, for the strip's 検索中… badge.
+    private var isSearchingLocally = false
+    private var isSearchingRemotely = false
+    /// Whether the newest results matched anything, rather than being
+    /// recent/popular padding (該当なし).
+    private var lastSearchMatched = true
+    /// The query Jev has answered, so a late local result can't replace
+    /// its better ranking.
+    private var remoteAnsweredQuery: String?
+    /// Waiting to see whether the sentence is finished.
+    private var pendingSentenceSearch: Task<Void, Never>?
+    /// A pause this long after a 確定, with nothing composing, counts as
+    /// the sentence being finished.
+    private static let sentencePause: TimeInterval = 0.7
+    /// After 。！？ there's no need to wait for a pause, only for the
+    /// document to catch up.
+    private static let sentenceEndDelay: TimeInterval = 0.15
+
     private let jev = JevClient()
     private var jevPacer = SearchRequestPacer(minimumInterval: 0.5)
     private var searchGeneration = 0
@@ -70,6 +98,7 @@ final class KeyboardViewController: UIInputViewController {
         candidateStrip.showHandednessPicker(current: handedness)
         engine.onCandidatesChanged = { [weak self] in self?.showCandidates() }
         engine.warmUp()
+        _ = searchIndex
 
         // Custom keyboard extensions can otherwise report a zero-height view
         // on first layout; an explicit height is the standard workaround.
@@ -117,6 +146,7 @@ final class KeyboardViewController: UIInputViewController {
         // Switching keyboards or dismissing mid-composition keeps what's
         // shown, like the stock keyboard.
         commitComposition()
+        cancelSentenceSearch()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -326,6 +356,7 @@ final class KeyboardViewController: UIInputViewController {
     // MARK: - Key handling
 
     private func handleFlick(_ key: FlickKey, direction: FlickDirection, isTap: Bool) {
+        cancelSentenceSearch()
         if isTap, !flickOnly, let toggle, toggle.key.label == key.label,
            Date().timeIntervalSince(toggle.time) < Self.toggleTimeout {
             let index = (toggle.index + 1) % key.cycle.count
@@ -344,6 +375,7 @@ final class KeyboardViewController: UIInputViewController {
     /// 小゛゜ / a/A: transform the character just before the cursor.
     private func handleModifier() {
         toggle = nil
+        cancelSentenceSearch()
         let before = engine.isComposing ? engine.reading : textDocumentProxy.documentContextBeforeInput
         guard let last = before?.last,
               let next = CharacterModifier.next(after: last, in: mode) else { return }
@@ -352,6 +384,7 @@ final class KeyboardViewController: UIInputViewController {
 
     private func switchMode(to newMode: KeyboardMode) {
         toggle = nil
+        cancelSentenceSearch()
         commitComposition()
         mode = newMode
         rebuildKeys()
@@ -359,6 +392,7 @@ final class KeyboardViewController: UIInputViewController {
 
     private func handleBackspace() {
         toggle = nil
+        cancelSentenceSearch()
         if engine.isComposing {
             // First ⌫ after 次候補 goes back to the reading, as on iPhone.
             if selectedConversion != nil {
@@ -411,8 +445,12 @@ final class KeyboardViewController: UIInputViewController {
             trackTyped(character)
             return
         }
-        // Typing on after picking a conversion keeps that conversion.
-        if selectedConversion != nil { commitComposition() }
+        // Typing on after picking a conversion keeps that conversion; the
+        // sentence isn't finished, though.
+        if selectedConversion != nil {
+            commitComposition()
+            cancelSentenceSearch()
+        }
         engine.insert(character)
         refreshComposition()
     }
@@ -420,6 +458,7 @@ final class KeyboardViewController: UIInputViewController {
     /// 空白: 次候補 while composing, a space otherwise.
     private func handleSpace() {
         toggle = nil
+        cancelSentenceSearch()
         if engine.isComposing {
             let count = engine.candidateTexts.count
             guard engine.candidatesAreCurrent, count > 0 else { return }
@@ -435,6 +474,7 @@ final class KeyboardViewController: UIInputViewController {
     /// 改行: 確定 while composing, a line break otherwise.
     private func handleReturn() {
         toggle = nil
+        cancelSentenceSearch()
         if engine.isComposing {
             commitComposition()
             return
@@ -459,6 +499,7 @@ final class KeyboardViewController: UIInputViewController {
         let isPunctuation = characters.unicodeScalars.allSatisfy(CharacterSet.punctuationCharacters.contains)
         guard EmojiSearchPolicy.isSearchableCharacter(characters), !isPunctuation else {
             endWord()
+            if SentenceContext.endsSentence(characters) { scheduleSentenceSearch(after: characters) }
             return
         }
         currentWord += characters
@@ -471,7 +512,10 @@ final class KeyboardViewController: UIInputViewController {
             return
         }
         emojiQuery = query
-        candidateStrip.update(candidates: EmojiSuggestions.candidates(for: query))
+        // The old emoji stay (dimmed if it takes a while) until the new
+        // ones are in.
+        candidateStrip.update(candidates: candidateStrip.emoji)
+        searchLocal(reading: query, query: query)
         searchRemote(for: query)
     }
 
@@ -501,11 +545,7 @@ final class KeyboardViewController: UIInputViewController {
         guard engine.isComposing else { return }
         let reading = engine.reading
         let conversions = engine.candidateTexts
-        candidateStrip.update(
-            conversions: conversions,
-            selected: selectedConversion,
-            emoji: EmojiSuggestions.candidates(for: reading, conversions: engine.readingConversions)
-        )
+        candidateStrip.update(conversions: conversions, selected: selectedConversion, emoji: candidateStrip.emoji)
         // Jev gets the reading with its top conversions, e.g.
         // なく（無く・泣く・鳴く）: the dictionary's first pick alone can be
         // the wrong word (無く), and the reading alone loses the kanji's
@@ -513,6 +553,7 @@ final class KeyboardViewController: UIInputViewController {
         let alternatives = engine.readingConversions.filter { $0 != reading }.prefix(3)
         let query = alternatives.isEmpty ? reading : "\(reading)（\(alternatives.joined(separator: "・"))）"
         emojiQuery = query
+        searchLocal(reading: reading, conversions: engine.readingConversions, query: query)
         searchRemote(for: query)
     }
 
@@ -525,19 +566,22 @@ final class KeyboardViewController: UIInputViewController {
     /// 確定: keep what's shown (the 次候補 pick, or the reading as typed).
     private func commitComposition() {
         guard engine.isComposing else { return }
-        replaceComposition(with: displayedComposition)
+        let text = displayedComposition
+        replaceComposition(with: text)
         if let selectedConversion { engine.complete(at: selectedConversion) }
         engine.reset()
         selectedConversion = nil
-        keepEmojiLane()
+        keepEmojiLane(after: text)
     }
 
     /// After a conversion is committed, leave its emoji up (and let a Jev
-    /// answer still land) so one can be added after the text.
-    private func keepEmojiLane() {
+    /// answer still land) so one can be added after the text; then, if the
+    /// sentence turns out to be finished, offer emoji for all of it.
+    private func keepEmojiLane(after committed: String) {
         currentWord = ""
         updateActionKeyTitles()
         candidateStrip.update(conversions: [], selected: nil, emoji: candidateStrip.emoji)
+        scheduleSentenceSearch(after: committed)
     }
 
     private func updateActionKeyTitles() {
@@ -545,20 +589,124 @@ final class KeyboardViewController: UIInputViewController {
         returnKey?.setTitle(engine.isComposing ? "確定" : "改行", for: .normal)
     }
 
+    // MARK: - Emoji search
+
+    /// Score the emoji for `reading` (and its kanji conversions) in the
+    /// background.
+    private func searchLocal(reading: String, conversions: [String] = [], query: String) {
+        startLocalSearch(query: query) { index, recent in
+            EmojiSuggestions.candidates(for: reading, conversions: conversions, in: index, recent: recent)
+        }
+    }
+
+    /// Run `search` off the main thread and show what it finds, if the
+    /// emoji row is still for `query` by then. Scoring the whole catalog
+    /// for every keystroke used to run right here on the main thread, and
+    /// taps queued up behind it.
+    private func startLocalSearch(
+        query: String,
+        _ search: @escaping @Sendable (EmojiSearchIndex, [String]) -> EmojiSuggestions.Result
+    ) {
+        localSearch?.cancel()
+        localGeneration += 1
+        let generation = localGeneration
+        let index = searchIndex
+        let recent = EmojiSuggestions.recent()
+        isSearchingLocally = true
+        refreshSearchState()
+        localSearch = Task { [weak self] in
+            let work = Task.detached(priority: .userInitiated) {
+                let loaded = await index.value
+                return search(loaded, recent)
+            }
+            // A newer keystroke cancels this; pass that on so the scoring
+            // stops early instead of finishing for nothing.
+            let result = await withTaskCancellationHandler {
+                await work.value
+            } onCancel: {
+                work.cancel()
+            }
+            guard let self, !Task.isCancelled, self.localGeneration == generation else { return }
+            self.localSearch = nil
+            self.isSearchingLocally = false
+            if self.emojiQuery == query, self.remoteAnsweredQuery != query {
+                // An empty result (a sentence nothing fits) keeps what's up.
+                if !result.entries.isEmpty { self.candidateStrip.updateEmoji(result.entries) }
+                self.lastSearchMatched = result.matched
+            }
+            self.refreshSearchState()
+        }
+    }
+
+    private func cancelLocalSearch() {
+        localSearch?.cancel()
+        localSearch = nil
+        localGeneration += 1
+        isSearchingLocally = false
+    }
+
+    /// 検索中… while anything is still out, then whether it found anything.
+    private func refreshSearchState() {
+        if isSearchingLocally || isSearchingRemotely {
+            candidateStrip.setSearchState(.searching(stale: isSearchingLocally))
+        } else {
+            candidateStrip.setSearchState(.finished(found: lastSearchMatched))
+        }
+    }
+
+    /// After text is committed: once the sentence looks finished, offer
+    /// emoji for all of it rather than its last word. Ending in 。！？ counts
+    /// right away; otherwise a pause in typing does. Any key cancels it.
+    private func scheduleSentenceSearch(after committed: String) {
+        pendingSentenceSearch?.cancel()
+        let ended = SentenceContext.endsSentence(committed)
+        let delay = ended ? Self.sentenceEndDelay : Self.sentencePause
+        pendingSentenceSearch = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(delay))
+            guard !Task.isCancelled, let self else { return }
+            self.pendingSentenceSearch = nil
+            self.searchSentence(after: committed, ended: ended)
+        }
+    }
+
+    private func cancelSentenceSearch() {
+        pendingSentenceSearch?.cancel()
+        pendingSentenceSearch = nil
+    }
+
+    private func searchSentence(after committed: String, ended: Bool) {
+        guard !engine.isComposing, currentWord.isEmpty,
+              let sentence = SentenceContext.lastSentence(in: textDocumentProxy.documentContextBeforeInput ?? "")
+        else { return }
+        // A pause after a lone word: its own emoji (and Jev answer) already
+        // fit, so leave them be.
+        guard ended || sentence.count > committed.count else { return }
+        emojiQuery = sentence
+        startLocalSearch(query: sentence) { index, _ in
+            let entries = EmojiSuggestions.sentenceCandidates(for: sentence, in: index)
+            return EmojiSuggestions.Result(entries: entries, matched: !entries.isEmpty)
+        }
+        // Jev reads the whole sentence too, when it's set up and allowed.
+        searchRemote(for: sentence)
+    }
+
     private func searchRemote(for query: String) {
         pendingJevSearch?.cancel()
         pendingJevSearch = nil
         let wait = max(Self.jevDebounce, jevPacer.waitDuration(at: Date()))
+        remoteAnsweredQuery = nil
         guard hasFullAccess, let apiKey = JevKeyStore.read(), !apiKey.isEmpty,
               EmojiSearchPolicy.shouldSearchRemote(query), wait <= Self.jevMaxWait else {
             // Whatever was pending or in flight is for an older query now.
             searchGeneration += 1
-            candidateStrip.setLoading(false)
+            isSearchingRemotely = false
+            refreshSearchState()
             return
         }
         searchGeneration += 1
         let generation = searchGeneration
-        candidateStrip.setLoading(true)
+        isSearchingRemotely = true
+        refreshSearchState()
         pendingJevSearch = Task { [weak self] in
             try? await Task.sleep(for: .seconds(wait))
             guard !Task.isCancelled, let self,
@@ -572,20 +720,29 @@ final class KeyboardViewController: UIInputViewController {
         jevPacer.recordAttempt(at: Date())
         // What comes before the composition helps Jev read the mood.
         let context = textDocumentProxy.documentContextBeforeInput.map { String($0.suffix(200)) }
+        let client = jev
+        let entries = EmojiCatalog.shared.searchableEntries
         do {
             defer {
-                // Only the newest request owns the dots; an older one
-                // finishing late mustn't hide them early.
-                if searchGeneration == generation { candidateStrip.setLoading(false) }
+                // Only the newest request owns the badge; an older one
+                // finishing late mustn't end it early.
+                if searchGeneration == generation {
+                    isSearchingRemotely = false
+                    refreshSearchState()
+                }
             }
-            let ranked = try await jev.rank(
-                query: query, context: context,
-                entries: EmojiCatalog.shared.searchableEntries, apiKey: apiKey
-            )
+            // Detached so building the request and reading the answer
+            // never land on the main thread, whatever isolation the
+            // package's async functions default to.
+            let ranked = try await Task.detached(priority: .userInitiated) {
+                try await client.rank(query: query, context: context, entries: entries, apiKey: apiKey)
+            }.value
             guard searchGeneration == generation, emojiQuery == query else { return }
             jevPacer.recordSuccess()
             // An empty ranking would blank the strip; keep what's there.
             guard !ranked.isEmpty else { return }
+            remoteAnsweredQuery = query
+            lastSearchMatched = true
             candidateStrip.updateEmoji(ranked)
         } catch JevError.http(429) {
             jevPacer.recordRateLimit(at: Date())
@@ -595,12 +752,16 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     private func endWord() {
+        cancelSentenceSearch()
+        cancelLocalSearch()
         pendingJevSearch?.cancel()
         pendingJevSearch = nil
         currentWord = ""
         emojiQuery = ""
         // Orphan any in-flight Jev request so it can't touch the strip.
         searchGeneration += 1
+        isSearchingRemotely = false
+        lastSearchMatched = true
         updateActionKeyTitles()
         candidateStrip.showHandednessPicker(current: handedness)
     }
@@ -609,6 +770,7 @@ final class KeyboardViewController: UIInputViewController {
 extension KeyboardViewController: EmojiCandidateStripViewDelegate {
     func candidateStrip(_ stripView: EmojiCandidateStripView, didSelect entry: EmojiEntry) {
         toggle = nil
+        cancelSentenceSearch()
         EmojiSuggestions.recordPick(entry)
         if engine.isComposing {
             // The emoji stands in for the whole composition.
@@ -629,14 +791,15 @@ extension KeyboardViewController: EmojiCandidateStripViewDelegate {
     func candidateStrip(_ stripView: EmojiCandidateStripView, didSelectConversionAt index: Int) {
         toggle = nil
         guard engine.candidatesAreCurrent, engine.candidateTexts.indices.contains(index) else { return }
-        replaceComposition(with: engine.candidateTexts[index])
+        let text = engine.candidateTexts[index]
+        replaceComposition(with: text)
         engine.complete(at: index)
         selectedConversion = nil
         // A first-clause pick (今日 of きょうはいい) leaves the rest composing.
         if engine.isComposing {
             refreshComposition()
         } else {
-            keepEmojiLane()
+            keepEmojiLane(after: text)
         }
     }
 
