@@ -111,8 +111,10 @@ final class KeyboardViewController: UIInputViewController {
         keyLeading = keyContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         keyTrailing = keyContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         NSLayoutConstraint.activate([
-            candidateStrip.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            candidateStrip.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            // The strip follows the keys when they're moved to one side, so
+            // candidates stay within reach of the same thumb.
+            candidateStrip.leadingAnchor.constraint(equalTo: keyContainer.leadingAnchor, constant: -Self.edgeInset),
+            candidateStrip.trailingAnchor.constraint(equalTo: keyContainer.trailingAnchor, constant: Self.edgeInset),
             candidateStrip.topAnchor.constraint(equalTo: view.topAnchor),
             candidateStrip.heightAnchor.constraint(equalToConstant: stripHeight),
 
