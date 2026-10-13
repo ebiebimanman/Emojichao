@@ -114,10 +114,9 @@ has fixed it before.
   explicit trigger — closer to the "noisy" built-in IME emoji suggestions
   discussed earlier than the macOS app's on-demand ':' search. Searches run
   in the background (three pulsing dots at the start of the emoji row show while one takes a moment), so
-  keys never wait on them. After a 確定, once the sentence ends in 。！？ or
-  typing pauses for 0.7 s, the strip offers emoji for the whole last
-  sentence (local keyword matching, plus Jev on that sentence when it's
-  enabled).
+  keys never wait on them. Right after a 確定, the strip offers emoji for
+  the whole sentence so far, to add after it (local keyword matching, plus
+  Jev on that sentence when it's enabled); typing 。 doesn't trigger it.
 - **Jev requires two separate opt-ins** (a saved API key, and "Allow Full
   Access" in Settings) by design — the keyboard never asks for either on its
   own, and works local-only if neither is set.

@@ -17,8 +17,8 @@ import UIKit
 ///
 /// Every emoji search (local scoring, Jev) runs off the main thread and is
 /// dropped if the text moved on meanwhile, so keys answer at once even
-/// mid-search. Once a sentence looks finished (it ends in 。！？, or typing
-/// pauses after a 確定), the row offers emoji for the whole sentence.
+/// mid-search. Right after a 確定, the row offers emoji for the whole
+/// sentence so far, to add after it (people don't put emoji after 。).
 @MainActor
 final class KeyboardViewController: UIInputViewController {
     private let candidateStrip = EmojiCandidateStripView()
@@ -70,14 +70,10 @@ final class KeyboardViewController: UIInputViewController {
     /// The query Jev has answered, so a late local result can't replace
     /// its better ranking.
     private var remoteAnsweredQuery: String?
-    /// Waiting to see whether the sentence is finished.
+    /// The sentence search waiting to start after a 確定.
     private var pendingSentenceSearch: Task<Void, Never>?
-    /// A pause this long after a 確定, with nothing composing, counts as
-    /// the sentence being finished.
-    private static let sentencePause: TimeInterval = 0.7
-    /// After 。！？ there's no need to wait for a pause, only for the
-    /// document to catch up.
-    private static let sentenceEndDelay: TimeInterval = 0.15
+    /// After a 確定, only long enough for the document to catch up.
+    private static let sentenceSearchDelay: TimeInterval = 0.1
 
     private let jev = JevClient()
     private var jevPacer = SearchRequestPacer(minimumInterval: 0.5)
@@ -499,7 +495,6 @@ final class KeyboardViewController: UIInputViewController {
         let isPunctuation = characters.unicodeScalars.allSatisfy(CharacterSet.punctuationCharacters.contains)
         guard EmojiSearchPolicy.isSearchableCharacter(characters), !isPunctuation else {
             endWord()
-            if SentenceContext.endsSentence(characters) { scheduleSentenceSearch(after: characters) }
             return
         }
         currentWord += characters
@@ -574,9 +569,8 @@ final class KeyboardViewController: UIInputViewController {
         keepEmojiLane(after: text)
     }
 
-    /// After a conversion is committed, leave its emoji up (and let a Jev
-    /// answer still land) so one can be added after the text; then, if the
-    /// sentence turns out to be finished, offer emoji for all of it.
+    /// After a conversion is committed, leave its emoji up so one can be
+    /// added after the text, then swap in emoji for the whole sentence.
     private func keepEmojiLane(after committed: String) {
         currentWord = ""
         updateActionKeyTitles()
@@ -654,18 +648,16 @@ final class KeyboardViewController: UIInputViewController {
         }
     }
 
-    /// After text is committed: once the sentence looks finished, offer
-    /// emoji for all of it rather than its last word. Ending in 。！？ counts
-    /// right away; otherwise a pause in typing does. Any key cancels it.
+    /// Right after a 確定, offer emoji for the whole sentence so far rather
+    /// than its last word. Any key cancels it.
     private func scheduleSentenceSearch(after committed: String) {
         pendingSentenceSearch?.cancel()
-        let ended = SentenceContext.endsSentence(committed)
-        let delay = ended ? Self.sentenceEndDelay : Self.sentencePause
+        let delay = Self.sentenceSearchDelay
         pendingSentenceSearch = Task { [weak self] in
             try? await Task.sleep(for: .seconds(delay))
             guard !Task.isCancelled, let self else { return }
             self.pendingSentenceSearch = nil
-            self.searchSentence(after: committed, ended: ended)
+            self.searchSentence(after: committed)
         }
     }
 
@@ -674,13 +666,13 @@ final class KeyboardViewController: UIInputViewController {
         pendingSentenceSearch = nil
     }
 
-    private func searchSentence(after committed: String, ended: Bool) {
+    private func searchSentence(after committed: String) {
         guard !engine.isComposing, currentWord.isEmpty,
               let sentence = SentenceContext.lastSentence(in: textDocumentProxy.documentContextBeforeInput ?? "")
         else { return }
-        // A pause after a lone word: its own emoji (and Jev answer) already
-        // fit, so leave them be.
-        guard ended || sentence.count > committed.count else { return }
+        // A lone word: its own emoji (and Jev answer) already fit, so leave
+        // them be.
+        guard sentence.count > committed.count else { return }
         emojiQuery = sentence
         startLocalSearch(query: sentence) { index, _ in
             let entries = EmojiSuggestions.sentenceCandidates(for: sentence, in: index)
