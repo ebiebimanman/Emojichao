@@ -113,7 +113,7 @@ has fixed it before.
 - **The candidate strip updates on every keystroke**, since there's no
   explicit trigger — closer to the "noisy" built-in IME emoji suggestions
   discussed earlier than the macOS app's on-demand ':' search. Searches run
-  in the background (a 検索中… badge shows while one takes a moment), so
+  in the background (three pulsing dots at the start of the emoji row show while one takes a moment), so
   keys never wait on them. After a 確定, once the sentence ends in 。！？ or
   typing pauses for 0.7 s, the strip offers emoji for the whole last
   sentence (local keyword matching, plus Jev on that sentence when it's
