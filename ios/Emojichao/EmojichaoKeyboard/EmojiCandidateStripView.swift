@@ -61,6 +61,7 @@ final class EmojiCandidateStripView: UIView {
     /// The emoji currently on show.
     var emoji: [EmojiEntry] { candidates }
     private var conversions: [String] = []
+    private var conversionButtons: [UIButton] = []
     private var selectedConversion: Int?
     private let loadingDots = LoadingDotsView()
     private var searchState = SearchState.idle
@@ -158,45 +159,55 @@ final class EmojiCandidateStripView: UIView {
         update(conversions: conversions, selected: index, emoji: candidates)
     }
 
+    /// Rebuilds only the rows whose contents changed: rebuilding scrolls a
+    /// row back to its start, so a search result landing mid-swipe used to
+    /// snap the conversions back and they seemed stuck.
     func update(conversions: [String], selected: Int?, emoji: [EmojiEntry]) {
         rows.isHidden = false
         handednessPicker.isHidden = true
-        self.conversions = conversions
-        self.selectedConversion = selected
-        self.candidates = emoji
 
-        let conversionButtons = conversions.enumerated().map { index, text in
-            let button = UIButton(type: .system)
-            button.setTitle(text, for: .normal)
-            button.setTitleColor(.label, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 18)
-            button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
-            button.layer.cornerRadius = 6
-            if index == selected {
-                button.backgroundColor = UIColor.systemBlue.withAlphaComponent(0.2)
+        let conversionsChanged = conversions != self.conversions
+        if conversionsChanged {
+            self.conversions = conversions
+            conversionButtons = conversions.enumerated().map { index, text in
+                let button = UIButton(type: .system)
+                button.setTitle(text, for: .normal)
+                button.setTitleColor(.label, for: .normal)
+                button.titleLabel?.font = .systemFont(ofSize: 18)
+                button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+                button.layer.cornerRadius = 6
+                button.widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minimumTapWidth).isActive = true
+                button.addAction(UIAction { [weak self] _ in
+                    guard let self else { return }
+                    self.delegate?.candidateStrip(self, didSelectConversionAt: index)
+                }, for: .touchUpInside)
+                return button
             }
-            button.widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minimumTapWidth).isActive = true
-            button.addAction(UIAction { [weak self] _ in
-                guard let self else { return }
-                self.delegate?.candidateStrip(self, didSelectConversionAt: index)
-            }, for: .touchUpInside)
-            return button
+            conversionRow.setItems(conversionButtons)
         }
-        conversionRow.setItems(conversionButtons)
-        if let selected, conversionButtons.indices.contains(selected) {
-            conversionRow.reveal(conversionButtons[selected])
+        if conversionsChanged || selected != selectedConversion {
+            selectedConversion = selected
+            for (index, button) in conversionButtons.enumerated() {
+                button.backgroundColor = index == selected ? UIColor.systemBlue.withAlphaComponent(0.2) : .clear
+            }
+            if let selected, conversionButtons.indices.contains(selected) {
+                conversionRow.reveal(conversionButtons[selected])
+            }
         }
 
-        let emojiItems: [UIView] = emoji.enumerated().map { index, entry in
-            let button = UIButton(type: .system)
-            button.setTitle(entry.emoji, for: .normal)
-            button.titleLabel?.font = .systemFont(ofSize: 28)
-            button.widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minimumTapWidth).isActive = true
-            button.tag = index
-            button.addTarget(self, action: #selector(candidateTapped(_:)), for: .touchUpInside)
-            return button
+        if emoji != candidates {
+            candidates = emoji
+            let emojiItems: [UIView] = emoji.enumerated().map { index, entry in
+                let button = UIButton(type: .system)
+                button.setTitle(entry.emoji, for: .normal)
+                button.titleLabel?.font = .systemFont(ofSize: 28)
+                button.widthAnchor.constraint(greaterThanOrEqualToConstant: Self.minimumTapWidth).isActive = true
+                button.tag = index
+                button.addTarget(self, action: #selector(candidateTapped(_:)), for: .touchUpInside)
+                return button
+            }
+            emojiRow.setItems(emojiItems)
         }
-        emojiRow.setItems(emojiItems)
         updateVisibility()
     }
 

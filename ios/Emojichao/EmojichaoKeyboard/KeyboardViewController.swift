@@ -5,9 +5,9 @@ import UIKit
 /// Gboard/Simeji) whose candidate row offers emoji for what you're typing
 /// alongside the kanji conversions. The keys copy the iPhone's own 日本語かな
 /// keyboard: a 12-key flick layout with 小゛゜, ABC/☆123 modes, the
-/// "フリックのみ" option, and the one-handed (左右寄せ) layout. Kana are held
-/// as marked text (未確定文字) and converted on-device by KanaKanjiEngine;
-/// ABC/☆123 input goes straight into the document.
+/// "フリックのみ" option, and the one-handed (左右寄せ) layout. Kana and
+/// ☆123 are held as marked text (未確定文字) and converted on-device by
+/// KanaKanjiEngine; ABC input goes straight into the document.
 ///
 /// Local matching always works with no network access. If the user grants
 /// "Allow Full Access" and has saved a Jev API key (via the container app's
@@ -383,7 +383,8 @@ final class KeyboardViewController: UIInputViewController {
     private func switchMode(to newMode: KeyboardMode) {
         toggle = nil
         cancelSentenceSearch()
-        commitComposition()
+        // Kana ⇄ ☆123 keeps composing, so 3 then じ converts to 3時.
+        if !newMode.composes { commitComposition() }
         mode = newMode
         rebuildKeys()
     }
@@ -438,7 +439,7 @@ final class KeyboardViewController: UIInputViewController {
     // MARK: - Typing and word search
 
     private func typeCharacter(_ character: String) {
-        guard mode == .kana else {
+        guard mode.composes else {
             textDocumentProxy.insertText(character)
             trackTyped(character)
             return
