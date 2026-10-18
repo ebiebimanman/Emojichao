@@ -5,9 +5,10 @@ import UIKit
 /// Gboard/Simeji) whose candidate row offers emoji for what you're typing
 /// alongside the kanji conversions. The keys copy the iPhone's own 日本語かな
 /// keyboard: a 12-key flick layout with 小゛゜, ABC/☆123 modes, the
-/// "フリックのみ" option, and the one-handed (左右寄せ) layout. Kana and
-/// ☆123 are held as marked text (未確定文字) and converted on-device by
-/// KanaKanjiEngine; ABC input goes straight into the document.
+/// "フリックのみ" option, and the one-handed (左右寄せ) layout. Everything
+/// typed (kana, ABC, ☆123) is held as marked text (未確定文字) and
+/// converted on-device by KanaKanjiEngine, so abc can become ＡＢＣ and 1じ
+/// 1時, as on the iPhone.
 ///
 /// Local matching always works with no network access. If the user grants
 /// "Allow Full Access" and has saved a Jev API key (via the container app's
@@ -42,9 +43,6 @@ final class KeyboardViewController: UIInputViewController {
     private var selectedConversion: Int?
     private weak var spaceKey: UIButton?
     private weak var returnKey: UIButton?
-    /// An ABC/☆123 word typed straight into the document since the last
-    /// word boundary; kana are tracked by `engine` instead.
-    private var currentWord = ""
     /// The text the emoji row is currently for, so a late Jev answer for
     /// something older is dropped.
     private var emojiQuery = ""
@@ -320,7 +318,7 @@ final class KeyboardViewController: UIInputViewController {
     private func setHandedness(_ newValue: KeyboardHandedness) {
         handedness = newValue
         handedness.save()
-        if currentWord.isEmpty && !engine.isComposing { candidateStrip.showHandednessPicker(current: handedness) }
+        if !engine.isComposing { candidateStrip.showHandednessPicker(current: handedness) }
         UIView.animate(withDuration: 0.2) {
             self.applyHandedness()
             self.view.layoutIfNeeded()
@@ -383,8 +381,7 @@ final class KeyboardViewController: UIInputViewController {
     private func switchMode(to newMode: KeyboardMode) {
         toggle = nil
         cancelSentenceSearch()
-        // Kana ⇄ ☆123 keeps composing, so 3 then じ converts to 3時.
-        if !newMode.composes { commitComposition() }
+        // The composition carries across modes, so 3 then じ converts to 3時.
         mode = newMode
         rebuildKeys()
     }
@@ -409,13 +406,8 @@ final class KeyboardViewController: UIInputViewController {
             return
         }
         textDocumentProxy.deleteBackward()
-        guard !currentWord.isEmpty else {
-            // Editing past a committed conversion: its emoji no longer fit.
-            endWord()
-            return
-        }
-        currentWord.removeLast()
-        updateCandidates(for: currentWord)
+        // Editing past a committed conversion: its emoji no longer fit.
+        endWord()
     }
 
     private func startBackspaceRepeat() {
@@ -439,11 +431,6 @@ final class KeyboardViewController: UIInputViewController {
     // MARK: - Typing and word search
 
     private func typeCharacter(_ character: String) {
-        guard mode.composes else {
-            textDocumentProxy.insertText(character)
-            trackTyped(character)
-            return
-        }
         // Typing on after picking a conversion keeps that conversion; the
         // sentence isn't finished, though.
         if selectedConversion != nil {
@@ -490,31 +477,7 @@ final class KeyboardViewController: UIInputViewController {
             return
         }
         textDocumentProxy.deleteBackward()
-        if !currentWord.isEmpty { currentWord.removeLast() }
         typeCharacter(character)
-    }
-
-    private func trackTyped(_ characters: String) {
-        let isPunctuation = characters.unicodeScalars.allSatisfy(CharacterSet.punctuationCharacters.contains)
-        guard EmojiSearchPolicy.isSearchableCharacter(characters), !isPunctuation else {
-            endWord()
-            return
-        }
-        currentWord += characters
-        updateCandidates(for: currentWord)
-    }
-
-    private func updateCandidates(for query: String) {
-        guard !query.isEmpty else {
-            candidateStrip.showHandednessPicker(current: handedness)
-            return
-        }
-        emojiQuery = query
-        // The old emoji stay (dimmed if it takes a while) until the new
-        // ones are in.
-        candidateStrip.update(candidates: candidateStrip.emoji)
-        searchLocal(reading: query, query: query)
-        searchRemote(for: query)
     }
 
     // MARK: - Composition (未確定文字)
@@ -575,7 +538,6 @@ final class KeyboardViewController: UIInputViewController {
     /// After a conversion is committed, leave its emoji up so one can be
     /// added after the text, then swap in emoji for the whole sentence.
     private func keepEmojiLane(after committed: String) {
-        currentWord = ""
         updateActionKeyTitles()
         candidateStrip.update(conversions: [], selected: nil, emoji: candidateStrip.emoji)
         scheduleSentenceSearch(after: committed)
@@ -670,7 +632,7 @@ final class KeyboardViewController: UIInputViewController {
     }
 
     private func searchSentence(after committed: String) {
-        guard !engine.isComposing, currentWord.isEmpty,
+        guard !engine.isComposing,
               let sentence = SentenceContext.lastSentence(in: textDocumentProxy.documentContextBeforeInput ?? "")
         else { return }
         // A lone word: its own emoji (and Jev answer) already fit, so leave
@@ -751,7 +713,6 @@ final class KeyboardViewController: UIInputViewController {
         cancelLocalSearch()
         pendingJevSearch?.cancel()
         pendingJevSearch = nil
-        currentWord = ""
         emojiQuery = ""
         // Orphan any in-flight Jev request so it can't touch the strip.
         searchGeneration += 1
@@ -774,10 +735,6 @@ extension KeyboardViewController: EmojiCandidateStripViewDelegate {
             selectedConversion = nil
             endWord()
             return
-        }
-        // Replace the typed word (if any) with the emoji.
-        for _ in 0..<currentWord.count {
-            textDocumentProxy.deleteBackward()
         }
         textDocumentProxy.insertText(entry.emoji)
         endWord()

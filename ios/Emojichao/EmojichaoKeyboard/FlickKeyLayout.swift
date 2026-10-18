@@ -59,10 +59,6 @@ enum KeyboardMode {
         }
     }
 
-    /// Kana and ☆123 are held as marked text so they can be converted
-    /// (1じ → 1時, 1 → １/一), as on the iPhone; ABC goes straight in.
-    var composes: Bool { self != .alphabet }
-
     /// Rows top to bottom, three keys each — same arrangement as the iPhone
     /// 日本語かな keyboard.
     var grid: [[CenterKey]] {

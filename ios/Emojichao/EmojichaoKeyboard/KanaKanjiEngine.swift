@@ -197,8 +197,7 @@ private final class ConversionWorker: @unchecked Sendable {
         }
     }
 
-    /// Opened on first use: loading the dictionary costs memory, and a
-    /// keyboard that's only used for ABC/☆123 shouldn't pay it.
+    /// Opened on first use (`warmUp`, or the first keystroke).
     private func loadedConverter() -> KanaKanjiConverter {
         if let converter { return converter }
         let converter = KanaKanjiConverter.withDefaultDictionary()
@@ -222,6 +221,9 @@ private final class ConversionWorker: @unchecked Sendable {
             requireJapanesePrediction: true,
             requireEnglishPrediction: false,
             keyboardLanguage: .ja_JP,
+            // ABC/☆123 are composed too: offer ＡＢＣ/１２３ like the stock
+            // keyboard.
+            fullWidthRomanCandidate: true,
             learningType: .inputAndOutput,
             memoryDirectoryURL: memory,
             sharedContainerURL: memory,

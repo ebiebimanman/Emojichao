@@ -144,11 +144,6 @@ final class EmojiCandidateStripView: UIView {
         isHidden = false
     }
 
-    /// Emoji only (no composition, e.g. an ABC word).
-    func update(candidates: [EmojiEntry]) {
-        update(conversions: [], selected: nil, emoji: candidates)
-    }
-
     /// Replace just the emoji row, keeping the conversions (search results).
     func updateEmoji(_ emoji: [EmojiEntry]) {
         update(conversions: conversions, selected: selectedConversion, emoji: emoji)
